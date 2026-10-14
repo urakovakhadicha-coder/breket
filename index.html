@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Breket Center</title>
+<link rel="icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="config.js"></script>
+<style>
+/* ------------------------------------------------------------------ тема */
+:root {
+  --brand: #4ED8D9;
+  --brand-ink: #04393A;
+  --brand-deep: #0E8F92;
+  --brand-soft: rgba(78, 216, 217, .14);
+  --bg: #F3F7F7;
+  --card: #FFFFFF;
+  --text: #0F1F20;
+  --muted: #687A7B;
+  --line: rgba(15, 31, 32, .08);
+  --danger: #E5484D;
+  --ok: #2F9E5B;
+  --radius: 18px;
+  --shadow: 0 1px 2px rgba(15,31,32,.04), 0 6px 20px rgba(15,31,32,.05);
+  --safe-bottom: max(env(safe-area-inset-bottom), 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1617; --card: #172122; --text: #EAF2F2; --muted: #8FA2A3;
+    --line: rgba(234,242,242,.09); --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13);
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1617; --card: #172122; --text: #EAF2F2; --muted: #8FA2A3;
+  --line: rgba(234,242,242,.09); --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13);
+  --shadow: none;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; background: var(--bg); color: var(--text); }
+body {
+  font-family: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 15px; line-height: 1.45; min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
+.wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px calc(110px + var(--safe-bottom)); }
+
+/* ------------------------------------------------------------------ шапка */
+.top { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 6px; }
+.back { width: 38px; height: 38px; border-radius: 12px; display: none; place-items: center; background: var(--card); box-shadow: var(--shadow); }
+.back svg { width: 20px; height: 20px; }
+.no-tg .back.show { display: grid; }
+.top-title { font-weight: 700; font-size: 16px; flex: 1; }
+.lang { display: flex; background: var(--card); border-radius: 12px; padding: 3px; box-shadow: var(--shadow); }
+.lang button { padding: 6px 10px; border-radius: 9px; font-weight: 700; font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
+.lang button.on { background: var(--brand); color: var(--brand-ink); }
+
+.logo { width: 40px; height: 46px; background: var(--brand); -webkit-mask: url(logo.png) center/contain no-repeat; mask: url(logo.png) center/contain no-repeat; flex: none; }
+
+.hero { display: flex; align-items: center; gap: 14px; padding: 18px 18px 18px 16px; margin: 4px 0 14px;
+  background: linear-gradient(135deg, var(--brand-soft), transparent 70%), var(--card);
+  border-radius: 22px; box-shadow: var(--shadow); }
+.hero .logo { width: 54px; height: 62px; }
+.hero h1 { font-size: 21px; line-height: 1.15; margin: 0; font-weight: 800; letter-spacing: -.01em; }
+.hero p { margin: 3px 0 0; color: var(--muted); font-size: 13.5px; font-weight: 600; }
+
+/* ------------------------------------------------------------------ блоки */
+h2 { font-size: 22px; font-weight: 800; letter-spacing: -.015em; margin: 6px 0 4px; }
+.sub { color: var(--muted); margin: 0 0 16px; font-weight: 500; }
+.label { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--muted); margin: 22px 4px 8px; }
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
+.stack > * + * { margin-top: 10px; }
+
+.cta { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 18px; border-radius: 20px;
+  background: var(--brand); color: var(--brand-ink); box-shadow: 0 10px 24px rgba(78,216,217,.32); transition: transform .12s; }
+.cta:active { transform: scale(.985); }
+.cta .ic { width: 46px; height: 46px; border-radius: 14px; background: rgba(255,255,255,.45); display: grid; place-items: center; flex: none; }
+.cta .ic svg { width: 24px; height: 24px; }
+.cta b { display: block; font-size: 17px; font-weight: 800; }
+.cta span { font-size: 13px; font-weight: 600; opacity: .75; }
+.cta .arrow { margin-left: auto; width: 20px; height: 20px; opacity: .6; }
+
+.row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 14px 16px; }
+.row + .row { border-top: 1px solid var(--line); }
+.row .ri { width: 38px; height: 38px; border-radius: 12px; background: var(--brand-soft); color: var(--brand-deep); display: grid; place-items: center; flex: none; }
+.row .ri svg { width: 20px; height: 20px; }
+.row b { display: block; font-weight: 700; }
+.row small { display: block; color: var(--muted); font-size: 13px; font-weight: 500; }
+.row .chev { margin-left: auto; width: 18px; height: 18px; color: var(--muted); flex: none; }
+.list { padding: 0; overflow: hidden; }
+
+/* запись */
+.bk-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: var(--brand-soft); color: var(--brand-deep); }
+.badge.ok { background: rgba(47,158,91,.12); color: var(--ok); }
+.bk-date { font-size: 24px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
+.bk-time { font-size: 15px; color: var(--muted); font-weight: 600; margin-top: 4px; }
+.bk-time b { color: var(--text); }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+.btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; padding: 10px 14px; border-radius: 14px; font-weight: 700; font-size: 14.5px; background: var(--brand-soft); color: var(--brand-deep); transition: transform .12s, opacity .12s; }
+.btn:active { transform: scale(.98); }
+.btn.primary { background: var(--brand); color: var(--brand-ink); }
+.btn.danger { background: rgba(229,72,77,.1); color: var(--danger); }
+.btn.full { grid-column: 1 / -1; width: 100%; }
+.btn[disabled] { opacity: .45; pointer-events: none; }
+.note { font-size: 13px; color: var(--muted); margin-top: 12px; font-weight: 500; }
+
+/* шаги */
+.steps { display: flex; gap: 6px; margin: 2px 0 16px; }
+.steps i { height: 4px; flex: 1; border-radius: 4px; background: var(--line); }
+.steps i.on { background: var(--brand); }
+
+.branch { display: block; width: 100%; text-align: left; padding: 16px; border: 2px solid transparent; }
+.branch.sel { border-color: var(--brand); }
+.branch .bn { display: flex; align-items: center; justify-content: space-between; }
+.branch b { font-size: 18px; font-weight: 800; }
+.days { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+.days span { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 8px; background: var(--brand-soft); color: var(--brand-deep); }
+.branch small { display: block; color: var(--muted); margin-top: 8px; font-size: 13px; font-weight: 500; }
+.branch .near { color: var(--text); font-weight: 700; }
+
+.grid { display: grid; gap: 8px; }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.chip { background: var(--card); box-shadow: var(--shadow); border-radius: 14px; padding: 12px 6px; text-align: center; border: 2px solid transparent; transition: transform .1s; }
+.chip:active { transform: scale(.96); }
+.chip.sel { border-color: var(--brand); background: var(--brand-soft); }
+.chip .w { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.chip .d { font-size: 22px; font-weight: 800; line-height: 1.15; }
+.chip .m { font-size: 12px; font-weight: 600; color: var(--muted); }
+.chip .t { font-size: 17px; font-weight: 800; }
+.month { font-weight: 800; font-size: 14px; margin: 16px 2px 8px; text-transform: capitalize; }
+.month:first-child { margin-top: 0; }
+
+.sum .line { display: flex; gap: 12px; padding: 11px 0; align-items: flex-start; }
+.sum .line + .line { border-top: 1px solid var(--line); }
+.sum .k { color: var(--muted); font-size: 13.5px; font-weight: 600; width: 92px; flex: none; }
+.sum .v { font-weight: 700; }
+.sum .v small { display: block; font-weight: 500; color: var(--muted); }
+
+.field { display: block; margin-bottom: 12px; }
+.field span { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 4px 6px; }
+.input { width: 100%; font: inherit; font-weight: 600; font-size: 16px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--text); outline: none; }
+.input:focus { border-color: var(--brand); }
+.phone-ok { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--brand-soft); font-weight: 700; }
+
+.done { text-align: center; padding: 24px 8px 8px; }
+.done .tick { width: 78px; height: 78px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; margin: 0 auto 16px; animation: pop .45s cubic-bezier(.2,1.4,.4,1); }
+.done .tick svg { width: 38px; height: 38px; }
+@keyframes pop { from { transform: scale(.4); opacity: 0; } }
+
+/* нижняя кнопка */
+.bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + var(--safe-bottom)); background: linear-gradient(transparent, var(--bg) 30%); z-index: 5; }
+.bar .btn { max-width: 488px; margin: 0 auto; min-height: 54px; font-size: 16px; border-radius: 16px; box-shadow: 0 10px 24px rgba(78,216,217,.3); }
+
+.empty { text-align: center; padding: 28px 16px; color: var(--muted); font-weight: 600; }
+.loader { display: grid; place-items: center; min-height: 60vh; }
+.spin { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--brand-soft); border-top-color: var(--brand); animation: s .8s linear infinite; }
+@keyframes s { to { transform: rotate(360deg); } }
+.toast { position: fixed; left: 16px; right: 16px; top: 14px; max-width: 488px; margin: 0 auto; z-index: 10; background: var(--text); color: var(--bg); padding: 13px 16px; border-radius: 14px; font-weight: 600; font-size: 14px; transform: translateY(-140%); transition: transform .3s; }
+.toast.show { transform: none; }
+.demo { font-size: 12px; font-weight: 700; text-align: center; color: var(--brand-deep); background: var(--brand-soft); padding: 7px; border-radius: 10px; margin-bottom: 10px; }
+.fade { animation: f .25s ease; }
+@keyframes f { from { opacity: 0; transform: translateY(6px); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <button class="back" id="back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div class="top-title" id="topTitle"></div>
+    <div class="lang"><button data-l="uz">UZ</button><button data-l="ru">RU</button></div>
+  </div>
+  <div id="app"><div class="loader"><div class="spin"></div></div></div>
+</div>
+<div class="bar" id="bar" hidden><button class="btn primary full" id="barBtn"></button></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// Адрес сервера — в файле config.js
+const API_URL = window.BREKET_API || '';
+
+/* ================================================================== */
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTg = !!(tg && tg.initData);
+const DEMO = !inTg;
+if (!inTg) document.documentElement.classList.add('no-tg');
+
+const I = {
+  arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
+  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18M12 14v4M10 16h4"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></svg>',
+  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>',
+  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></svg>'
+};
+
+/* ------------------------------------------------------------------ тексты */
+const T = {
+  uz: {
+    clinic: 'Breket Center', doctor: 'Dr. Shahboz klinikasi',
+    book: 'Aktivatsiyaga yozilish', bookSub: 'Onlayn, 1 daqiqada',
+    myBooking: 'Sizning yozuvingiz', addresses: 'Manzillarimiz', admin: "Admin bilan bog'lanish", adminSub: 'Savollar bo\'lsa yozing',
+    map: 'Xaritada ochish', branch: 'Filial', date: 'Sana', time: 'Vaqt', name: 'Ism', phone: 'Telefon', address: 'Manzil',
+    chooseBranch: 'Filialni tanlang', chooseBranchSub: 'Qaysi filialga kelasiz?',
+    chooseDate: 'Sanani tanlang', chooseTime: 'Vaqtni tanlang',
+    nearest: 'Eng yaqin bo\'sh kun', noPlaces: "Hozircha bo'sh joy yo'q",
+    noSlotsDay: "Bu kunda bo'sh joyimiz yo'q. Boshqa sanani tanlang.",
+    yourData: "Ma'lumotlaringiz", yourDataSub: 'Bir marta kiritiladi',
+    fullName: 'Ism va familiya', namePh: 'Masalan: Aziza Karimova', sharePhone: 'Raqamni yuborish',
+    shareHint: 'Raqam Telegram orqali yuboriladi', next: 'Davom etish',
+    confirmTitle: 'Tasdiqlang', confirmSub: "Ma'lumotlarni tekshiring", confirm: 'Tasdiqlash', confirmMove: "Ko'chirishni tasdiqlash",
+    oldBooking: 'Eski yozuv',
+    doneTitle: 'Yozildingiz!', doneMoved: "Yozuv ko'chirildi!", doneSub: 'Tashrifdan oldin Telegramda eslatma yuboramiz.',
+    home: 'Bosh sahifa', coming: 'Kelaman', confirmed: 'Tasdiqlangan', waiting: 'Faol',
+    move: "Ko'chirish", cancel: 'Bekor qilish', askCancel: 'Yozuvni bekor qilasizmi?', cancelled: 'Yozuv bekor qilindi',
+    tooLate: "Tashrif kuni bekor qilish yoki ko'chirish faqat admin orqali.",
+    thanks: 'Rahmat! Sizni kutamiz', slotTaken: 'Bu vaqt hozirgina band qilindi, boshqasini tanlang.',
+    changed: "Yozuvingiz o'zgartirilgan, admin bilan bog'laning.", error: "Xatolik yuz berdi. Birozdan keyin urinib ko'ring.",
+    limit: 'Sizda allaqachon faol yozuv bor.', demo: 'Demo rejim — jadvalga yozilmaydi', filial: 'filiali',
+    days: ['Ya', 'Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha'],
+    daysFull: ['yakshanba', 'dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba'],
+    months: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'],
+    monthsShort: ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek'],
+    fmtDate: (d, m, w) => `${d}-${m}, ${w}`, monthTitle: (m, y) => `${m} ${y}`
+  },
+  ru: {
+    clinic: 'Breket Center', doctor: 'Клиника Dr. Shahboz',
+    book: 'Записаться на активацию', bookSub: 'Онлайн, за 1 минуту',
+    myBooking: 'Ваша запись', addresses: 'Наши адреса', admin: 'Связаться с админом', adminSub: 'Если есть вопросы',
+    map: 'Открыть на карте', branch: 'Филиал', date: 'Дата', time: 'Время', name: 'Имя', phone: 'Телефон', address: 'Адрес',
+    chooseBranch: 'Выберите филиал', chooseBranchSub: 'В какой филиал придёте?',
+    chooseDate: 'Выберите дату', chooseTime: 'Выберите время',
+    nearest: 'Ближайший свободный день', noPlaces: 'Пока нет свободных мест',
+    noSlotsDay: 'На этот день свободных мест нет. Выберите другую дату.',
+    yourData: 'Ваши данные', yourDataSub: 'Вводятся один раз',
+    fullName: 'Имя и фамилия', namePh: 'Например: Азиза Каримова', sharePhone: 'Отправить номер',
+    shareHint: 'Номер передаётся через Telegram', next: 'Продолжить',
+    confirmTitle: 'Подтвердите', confirmSub: 'Проверьте данные', confirm: 'Подтвердить запись', confirmMove: 'Подтвердить перенос',
+    oldBooking: 'Старая запись',
+    doneTitle: 'Вы записаны!', doneMoved: 'Запись перенесена!', doneSub: 'Перед визитом пришлём напоминание в Telegram.',
+    home: 'На главную', coming: 'Приду', confirmed: 'Подтверждено', waiting: 'Активна',
+    move: 'Перенести', cancel: 'Отменить', askCancel: 'Отменить запись?', cancelled: 'Запись отменена',
+    tooLate: 'В день визита отменить или перенести запись можно только через администратора.',
+    thanks: 'Спасибо! Ждём вас', slotTaken: 'Это время только что заняли, выберите другое.',
+    changed: 'Ваша запись была изменена, свяжитесь с администратором.', error: 'Произошла ошибка. Попробуйте чуть позже.',
+    limit: 'У вас уже есть активная запись.', demo: 'Демо-режим — в таблицу не пишет', filial: '',
+    days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+    daysFull: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
+    months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    monthsShort: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
+    monthsNom: ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'],
+    fmtDate: (d, m, w) => `${d} ${m}, ${w}`, monthTitle: (m, y) => `${m} ${y}`
+  }
+};
+
+/* ------------------------------------------------------------------ состояние */
+const S = {
+  lang: 'uz', user: null, config: null, bookings: [], slots: {}, today: '',
+  screen: 'home', branch: null, day: null, time: null, moveFrom: null, regName: '', regPhone: '', result: null, busy: false
+};
+const t = k => T[S.lang][k];
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const dObj = day => new Date(day + 'T12:00:00Z');
+const fmtLong = day => { const d = dObj(day); return T[S.lang].fmtDate(d.getUTCDate(), t('months')[d.getUTCMonth()], t('daysFull')[d.getUTCDay()]); };
+const fmtShort = day => { const d = dObj(day); return `${d.getUTCDate()} ${t('monthsShort')[d.getUTCMonth()]}`; };
+const fmtPhone = p => { p = String(p || '').replace(/\D/g, '').slice(-9); return p.length === 9 ? `+998 ${p.slice(0, 2)} ${p.slice(2, 5)} ${p.slice(5, 7)} ${p.slice(7)}` : p; };
+const branchInfo = b => (S.config && S.config.branches[b]) || {};
+const addr = b => branchInfo(b)['address_' + S.lang] || branchInfo(b).address_uz || '';
+const landmark = b => branchInfo(b)['landmark_' + S.lang] || '';
+const branchName = b => S.lang === 'uz' ? `${b} ${t('filial')}` : b;
+const DEFAULT_DAYS = { Sergeli: [1, 3, 5], Yashnabod: [2, 4, 6] };
+const branchDays = b => (branchInfo(b).days || DEFAULT_DAYS[b] || []);
+
+function haptic(kind) {
+  try {
+    if (!inTg) return;
+    if (kind === 'sel') tg.HapticFeedback.selectionChanged();
+    else tg.HapticFeedback.notificationOccurred(kind);
+  } catch (e) {}
+}
+function toast(msg) {
+  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 3200);
+}
+function confirmDialog(msg) {
+  return new Promise(res => {
+    if (inTg && tg.isVersionAtLeast('6.2')) tg.showConfirm(msg, ok => res(ok));
+    else res(window.confirm(msg));
+  });
+}
+
+/* ------------------------------------------------------------------ API */
+async function api(action, data = {}) {
+  if (DEMO) return demoApi(action, data);
+  if (!API_URL) throw new Error('not_configured');
+  const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action, initData: tg.initData, ...data }) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'error');
+  return j;
+}
+function errText(e) {
+  const m = { slot_taken: 'slotTaken', too_late: 'tooLate', changed_by_admin: 'changed', limit: 'limit' }[e.message];
+  return m ? t(m) : t('error');
+}
+
+/* ------------------------------------------------------------------ демо-данные (вне Telegram) */
+const demo = { user: null, bookings: [], slots: null };
+function demoSlots() {
+  const out = { Sergeli: {}, Yashnabod: {} };
+  const times = ['11:00', '11:30', '12:00', '12:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
+  const now = new Date();
+  for (let i = 1; i < 25; i++) {
+    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + i, 12));
+    const wd = d.getUTCDay(), key = d.toISOString().slice(0, 10);
+    const br = Object.keys(DEFAULT_DAYS).find(b => DEFAULT_DAYS[b].includes(wd));
+    if (!br) continue;
+    const free = times.filter((_, j) => (j * 7 + i * 3) % 5 > 1);
+    if (i === 3) continue; // день без мест
+    out[br][key] = free;
+  }
+  return out;
+}
+async function demoApi(action, d) {
+  await new Promise(r => setTimeout(r, 350));
+  demo.slots = demo.slots || demoSlots();
+  const today = new Date().toISOString().slice(0, 10);
+  const pub = b => ({ ...b, canChange: today < b.day });
+  if (action === 'init') return {
+    user: demo.user, bookings: demo.bookings.filter(b => b.status === 'active').map(pub), slots: demo.slots, today,
+    config: { branchOrder: ['Sergeli', 'Yashnabod'], adminUsername: '', branches: {
+      Sergeli: { days: [1, 3, 5], address_uz: "Sergeli tumani (demo manzil)", address_ru: 'Сергелийский район (демо-адрес)', landmark_uz: '', landmark_ru: '', map: '' },
+      Yashnabod: { days: [2, 4, 6], address_uz: "Yashnobod tumani (demo manzil)", address_ru: 'Яшнабадский район (демо-адрес)', landmark_uz: '', landmark_ru: '', map: '' } } }
+  };
+  if (action === 'register') { demo.user = { name: d.name, phone: d.phone.replace(/\D/g, '').slice(-9), lang: d.lang }; return { user: demo.user }; }
+  if (action === 'setLang') return {};
+  if (action === 'book') {
+    const list = demo.slots[d.branch][d.day] || [];
+    if (!list.includes(d.time)) throw new Error('slot_taken');
+    demo.slots[d.branch][d.day] = list.filter(x => x !== d.time);
+    if (d.moveFrom) { const o = demo.bookings.find(b => b.id === d.moveFrom); o.status = 'moved'; (demo.slots[o.branch][o.day] = demo.slots[o.branch][o.day] || []).push(o.time); demo.slots[o.branch][o.day].sort(); }
+    const b = { id: 'd' + Date.now(), day: d.day, time: d.time, branch: d.branch, confirmed: false, status: 'active' };
+    demo.bookings.push(b);
+    return { booking: pub(b), slots: demo.slots };
+  }
+  if (action === 'cancel') { const b = demo.bookings.find(x => x.id === d.id); b.status = 'cancelled'; (demo.slots[b.branch][b.day] = demo.slots[b.branch][b.day] || []).push(b.time); demo.slots[b.branch][b.day].sort(); return { slots: demo.slots }; }
+  if (action === 'confirm') { demo.bookings.find(x => x.id === d.id).confirmed = true; return {}; }
+  return {};
+}
+
+/* ------------------------------------------------------------------ навигация */
+const PARENT = { branch: 'home', date: 'branch', time: 'date', register: 'time', confirm: 'time', done: 'home' };
+function go(screen) {
+  S.screen = screen;
+  render();
+  window.scrollTo(0, 0);
+}
+function back() {
+  haptic('sel');
+  let p = PARENT[S.screen] || 'home';
+  if (S.screen === 'confirm' && !S.user) p = 'register';
+  if (p === 'home') S.moveFrom = null;
+  go(p);
+}
+
+function setBar(text, onClick, disabled) {
+  const bar = $('#bar'), b = $('#barBtn');
+  if (!text) { bar.hidden = true; b.onclick = null; return; }
+  bar.hidden = false; b.textContent = text; b.disabled = !!disabled || S.busy;
+  b.onclick = onClick;
+}
+
+/* ------------------------------------------------------------------ экраны */
+function render() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
+  const isHome = S.screen === 'home' || S.screen === 'done';
+  $('#back').classList.toggle('show', !isHome);
+  if (inTg) { if (isHome) tg.BackButton.hide(); else tg.BackButton.show(); }
+  const titles = { branch: t('book'), date: t('book'), time: t('book'), register: t('yourData'), confirm: t('book') };
+  $('#topTitle').textContent = isHome ? '' : (S.moveFrom ? t('move') : titles[S.screen] || '');
+  setBar(null);
+  const html = SCREENS[S.screen]();
+  const app = $('#app');
+  app.innerHTML = (DEMO ? `<div class="demo">${t('demo')}</div>` : '') + `<div class="fade">${html}</div>`;
+  (AFTER[S.screen] || (() => {}))();
+}
+
+function steps(n) { return `<div class="steps">${[1, 2, 3, 4].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`; }
+
+function bookingCard(b) {
+  const actions = b.canChange
+    ? `<div class="actions">
+        ${b.confirmed ? '' : `<button class="btn primary full" data-act="coming" data-id="${b.id}">${I.check.replace('stroke-width="3"', 'stroke-width="3" width="18" height="18"')} ${t('coming')}</button>`}
+        <button class="btn" data-act="move" data-id="${b.id}">${t('move')}</button>
+        <button class="btn danger" data-act="cancel" data-id="${b.id}">${t('cancel')}</button>
+      </div>`
+    : `<div class="actions">${b.confirmed ? '' : `<button class="btn primary full" data-act="coming" data-id="${b.id}">${t('coming')}</button>`}</div>
+       <div class="note">${t('tooLate')}</div>`;
+  return `<div class="card">
+    <div class="bk-head"><span class="badge ${b.confirmed ? 'ok' : ''}">${b.confirmed ? '✓ ' + t('confirmed') : t('waiting')}</span>
+      <button class="badge" data-act="map" data-branch="${b.branch}">📍 ${esc(b.branch)}</button></div>
+    <div class="bk-date">${fmtLong(b.day)}</div>
+    <div class="bk-time"><b>${b.time}</b> · ${esc(branchName(b.branch))}</div>
+    ${addr(b.branch) ? `<div class="note" style="margin-top:6px">${esc(addr(b.branch))}</div>` : ''}
+    ${actions}
+  </div>`;
+}
+
+function weekdays(b) {
+  return [1, 2, 3, 4, 5, 6, 0].filter(d => branchDays(b).includes(d)).map(d => `<span>${t('days')[d]}</span>`).join('');
+}
+
+const SCREENS = {
+  home() {
+    const active = S.bookings[0];
+    return `
+      <div class="hero"><div class="logo"></div><div><h1>${t('clinic')}</h1><p>${t('doctor')}</p></div></div>
+      ${active ? `<div class="label">${t('myBooking')}</div>${bookingCard(active)}`
+        : `<button class="cta" data-act="book"><div class="ic">${I.cal}</div><div><b>${t('book')}</b><span>${t('bookSub')}</span></div><div class="arrow">${I.arrow}</div></button>`}
+      <div class="label">${t('addresses')}</div>
+      <div class="card list">
+        ${S.config.branchOrder.map(b => `
+          <button class="row" data-act="map" data-branch="${b}">
+            <div class="ri">${I.pin}</div>
+            <div><b>${esc(branchName(b))}</b><small>${esc(addr(b) || '—')}${landmark(b) ? ' · ' + esc(landmark(b)) : ''}</small>
+              <div class="days" style="margin-top:6px">${weekdays(b)}</div></div>
+            <div class="chev">${I.arrow}</div>
+          </button>`).join('')}
+      </div>
+      <div class="label">&nbsp;</div>
+      <div class="card list">
+        <button class="row" data-act="admin"><div class="ri">${I.chat}</div><div><b>${t('admin')}</b><small>${t('adminSub')}</small></div><div class="chev">${I.arrow}</div></button>
+      </div>`;
+  },
+
+  branch() {
+    return `${steps(1)}<h2>${t('chooseBranch')}</h2><p class="sub">${t('chooseBranchSub')}</p>
+      <div class="stack">${S.config.branchOrder.map(b => {
+        const days = Object.keys(S.slots[b] || {}).sort();
+        return `<button class="card branch ${S.branch === b ? 'sel' : ''}" data-act="pickBranch" data-branch="${b}">
+          <div class="bn"><b>${esc(b)}</b><div class="chev" style="width:18px;color:var(--muted)">${I.arrow}</div></div>
+          <div class="days">${weekdays(b)}</div>
+          <small>${esc(addr(b))}</small>
+          <small>${days.length ? `${t('nearest')}: <span class="near">${fmtLong(days[0])}</span>` : t('noPlaces')}</small>
+        </button>`;
+      }).join('')}</div>`;
+  },
+
+  date() {
+    const days = Object.keys(S.slots[S.branch] || {}).sort();
+    if (!days.length) return `${steps(2)}<h2>${t('chooseDate')}</h2><div class="card empty">${t('noPlaces')}</div>`;
+    let html = '', month = '';
+    days.forEach(day => {
+      const d = dObj(day), m = d.getUTCMonth();
+      const mt = T[S.lang].monthTitle((T[S.lang].monthsNom || T[S.lang].months)[m], d.getUTCFullYear());
+      if (mt !== month) { html += (month ? '</div>' : '') + `<div class="month">${mt}</div><div class="grid g3">`; month = mt; }
+      html += `<button class="chip ${S.day === day ? 'sel' : ''}" data-act="pickDate" data-day="${day}">
+        <div class="w">${t('days')[d.getUTCDay()]}</div><div class="d">${d.getUTCDate()}</div><div class="m">${t('monthsShort')[m]}</div></button>`;
+    });
+    return `${steps(2)}<h2>${t('chooseDate')}</h2><p class="sub">${esc(branchName(S.branch))}</p>${html}</div>`;
+  },
+
+  time() {
+    const times = (S.slots[S.branch] || {})[S.day] || [];
+    return `${steps(3)}<h2>${t('chooseTime')}</h2><p class="sub">${fmtLong(S.day)} · ${esc(S.branch)}</p>
+      ${times.length ? `<div class="grid g4">${times.map(tm => `<button class="chip ${S.time === tm ? 'sel' : ''}" data-act="pickTime" data-time="${tm}"><div class="t">${tm}</div></button>`).join('')}</div>`
+        : `<div class="card empty">${t('noSlotsDay')}</div>`}`;
+  },
+
+  register() {
+    const canContact = inTg && tg.isVersionAtLeast('6.9');
+    return `${steps(4)}<h2>${t('yourData')}</h2><p class="sub">${t('yourDataSub')}</p>
+      <label class="field"><span>${t('fullName')}</span><input class="input" id="regName" autocomplete="name" maxlength="60" placeholder="${esc(t('namePh'))}" value="${esc(S.regName)}"></label>
+      <div class="field"><span>${t('phone')}</span>
+        ${S.regPhone ? `<div class="phone-ok"><span style="color:var(--ok)">${I.check.replace('<svg', '<svg width="20" height="20"')}</span>${fmtPhone(S.regPhone)}</div>`
+          : canContact || DEMO ? `<button class="btn full" data-act="share" style="min-height:52px">${I.phone.replace('<svg', '<svg width="20" height="20"')} ${t('sharePhone')}</button><div class="note">${t('shareHint')}</div>`
+          : `<input class="input" id="regPhone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __">`}
+      </div>`;
+  },
+
+  confirm() {
+    const old = S.moveFrom && S.bookings.find(b => b.id === S.moveFrom);
+    const u = S.user || { name: S.regName, phone: S.regPhone };
+    const line = (k, v, s) => `<div class="line"><div class="k">${k}</div><div class="v">${v}${s ? `<small>${s}</small>` : ''}</div></div>`;
+    return `${steps(4)}<h2>${t('confirmTitle')}</h2><p class="sub">${t('confirmSub')}</p>
+      <div class="card sum">
+        ${old ? line(t('oldBooking'), `<s style="opacity:.6">${fmtShort(old.day)}, ${old.time}</s>`, esc(old.branch)) : ''}
+        ${line(t('branch'), esc(branchName(S.branch)), esc(addr(S.branch)))}
+        ${line(t('date'), fmtLong(S.day))}
+        ${line(t('time'), S.time)}
+        ${line(t('name'), esc(u.name), fmtPhone(u.phone))}
+      </div>`;
+  },
+
+  done() {
+    const b = S.result;
+    return `<div class="done"><div class="tick">${I.check}</div>
+      <h2>${S.result.moved ? t('doneMoved') : t('doneTitle')}</h2><p class="sub">${t('doneSub')}</p></div>
+      <div class="card sum">
+        <div class="line"><div class="k">${t('date')}</div><div class="v">${fmtLong(b.day)}</div></div>
+        <div class="line"><div class="k">${t('time')}</div><div class="v">${b.time}</div></div>
+        <div class="line"><div class="k">${t('branch')}</div><div class="v">${esc(branchName(b.branch))}<small>${esc(addr(b.branch))}${landmark(b.branch) ? '<br>' + esc(landmark(b.branch)) : ''}</small></div></div>
+      </div>
+      <div class="actions"><button class="btn" data-act="map" data-branch="${b.branch}">${I.pin.replace('<svg', '<svg width="18" height="18"')} ${t('map')}</button>
+        <button class="btn" data-act="home">${t('home')}</button></div>`;
+  }
+};
+
+const AFTER = {
+  time() { if (S.time) setBar(t('next'), nextFromTime); },
+  register() {
+    const upd = () => setBar(t('next'), submitRegistration, ($('#regName').value.trim().length < 2) || !(S.regPhone || ($('#regPhone') && $('#regPhone').value.replace(/\D/g, '').length >= 9)));
+    $('#regName').addEventListener('input', e => { S.regName = e.target.value; upd(); });
+    if ($('#regPhone')) $('#regPhone').addEventListener('input', upd);
+    upd();
+  },
+  confirm() { setBar(S.moveFrom ? t('confirmMove') : t('confirm'), doBook); },
+  done() { setBar(null); }
+};
+
+/* ------------------------------------------------------------------ действия */
+function startBooking() {
+  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null;
+  go('branch');
+}
+function nextFromTime() {
+  go(S.user ? 'confirm' : 'register');
+}
+function submitRegistration() {
+  S.regName = $('#regName').value.trim().split(/\s+/).join(' ');
+  if ($('#regPhone')) S.regPhone = $('#regPhone').value;
+  go('confirm');
+}
+function sharePhone() {
+  if (DEMO) { S.regPhone = '901234567'; render(); return; }
+  tg.requestContact((ok, res) => {
+    if (ok && res && res.responseUnsafe && res.responseUnsafe.contact) {
+      S.regPhone = res.responseUnsafe.contact.phone_number; haptic('success'); render();
+    }
+  });
+}
+function askWriteAccess() {
+  return new Promise(res => {
+    if (!inTg || !tg.isVersionAtLeast('6.9')) return res();
+    try { tg.requestWriteAccess(() => res()); } catch (e) { res(); }
+  });
+}
+
+async function doBook() {
+  if (S.busy) return;
+  S.busy = true; setBar(S.moveFrom ? t('confirmMove') : t('confirm'), null, true); $('#barBtn').innerHTML = '<div class="spin" style="width:22px;height:22px;border-width:2.5px"></div>';
+  try {
+    if (!S.user) {
+      const r = await api('register', { name: S.regName, phone: S.regPhone, lang: S.lang });
+      S.user = r.user;
+    }
+    await askWriteAccess();
+    const moved = !!S.moveFrom;
+    const r = await api('book', { branch: S.branch, day: S.day, time: S.time, moveFrom: S.moveFrom || undefined });
+    S.slots = r.slots; S.bookings = [r.booking]; S.moveFrom = null; S.user.lastBranch = S.branch;
+    S.result = { ...r.booking, moved };
+    haptic('success');
+    S.busy = false; go('done');
+  } catch (e) {
+    S.busy = false; haptic('error'); toast(errText(e));
+    if (e.message === 'slot_taken') {
+      try { S.slots = (await api('slots')).slots; } catch (_) {}
+      S.time = null; go('time');
+    } else render();
+  }
+}
+
+async function refresh() {
+  const r = await api('init');
+  S.user = r.user; S.config = r.config; S.bookings = r.bookings; S.slots = r.slots; S.today = r.today;
+  if (r.user && r.user.lang) S.lang = r.user.lang;
+}
+
+document.addEventListener('click', async e => {
+  const el = e.target.closest('[data-act]');
+  if (!el || S.busy) return;
+  const a = el.dataset.act;
+  if (a === 'book') { haptic('sel'); startBooking(); }
+  else if (a === 'home') { S.moveFrom = null; go('home'); }
+  else if (a === 'pickBranch') { haptic('sel'); S.branch = el.dataset.branch; S.day = null; S.time = null; go('date'); }
+  else if (a === 'pickDate') {
+    haptic('sel'); S.day = el.dataset.day; S.time = null;
+    if (!((S.slots[S.branch] || {})[S.day] || []).length) { toast(t('noSlotsDay')); return; }
+    go('time');
+  }
+  else if (a === 'pickTime') {
+    haptic('sel'); S.time = el.dataset.time;
+    document.querySelectorAll('[data-act="pickTime"]').forEach(x => x.classList.toggle('sel', x === el));
+    setBar(t('next'), nextFromTime);
+  }
+  else if (a === 'share') sharePhone();
+  else if (a === 'map') {
+    const url = branchInfo(el.dataset.branch).map;
+    if (!url) { toast(addr(el.dataset.branch) || '—'); return; }
+    inTg ? tg.openLink(url) : window.open(url, '_blank');
+  }
+  else if (a === 'admin') {
+    const u = S.config.adminUsername;
+    if (!u) { toast('—'); return; }
+    inTg ? tg.openTelegramLink('https://t.me/' + u) : window.open('https://t.me/' + u, '_blank');
+  }
+  else if (a === 'coming') {
+    S.busy = true;
+    try { await api('confirm', { id: el.dataset.id }); S.bookings.forEach(b => { if (b.id === el.dataset.id) b.confirmed = true; }); haptic('success'); toast(t('thanks')); }
+    catch (err) { toast(errText(err)); }
+    S.busy = false; render();
+  }
+  else if (a === 'move') { S.moveFrom = el.dataset.id; const b = S.bookings.find(x => x.id === S.moveFrom); S.branch = b.branch; S.day = null; S.time = null; go('branch'); }
+  else if (a === 'cancel') {
+    if (!(await confirmDialog(t('askCancel')))) return;
+    S.busy = true; render();
+    try { const r = await api('cancel', { id: el.dataset.id }); S.slots = r.slots; S.bookings = S.bookings.filter(b => b.id !== el.dataset.id); haptic('success'); toast(t('cancelled')); }
+    catch (err) { haptic('error'); toast(errText(err)); if (err.message === 'changed_by_admin') S.bookings = S.bookings.filter(b => b.id !== el.dataset.id); }
+    S.busy = false; render();
+  }
+});
+
+$('#back').addEventListener('click', back);
+document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
+  if (S.lang === b.dataset.l) return;
+  S.lang = b.dataset.l; haptic('sel'); render();
+  if (S.user) api('setLang', { lang: S.lang }).catch(() => {});
+}));
+
+/* ------------------------------------------------------------------ старт */
+(async function start() {
+  if (inTg) {
+    tg.ready(); tg.expand();
+    document.documentElement.dataset.theme = tg.colorScheme;
+    try { tg.setHeaderColor(tg.colorScheme === 'dark' ? '#0E1617' : '#F3F7F7'); tg.setBackgroundColor(tg.colorScheme === 'dark' ? '#0E1617' : '#F3F7F7'); } catch (e) {}
+    tg.BackButton.onClick(back);
+    tg.onEvent('themeChanged', () => { document.documentElement.dataset.theme = tg.colorScheme; });
+    const lc = (tg.initDataUnsafe.user || {}).language_code || '';
+    S.lang = lc.startsWith('ru') ? 'ru' : 'uz';
+  } else {
+    S.lang = (navigator.language || '').startsWith('ru') ? 'ru' : 'uz';
+  }
+  try {
+    await refresh();
+    render();
+  } catch (e) {
+    $('#app').innerHTML = `<div class="hero"><div class="logo"></div><div><h1>Breket Center</h1><p>${t('doctor')}</p></div></div>
+      <div class="card empty">${t('error')}<br><small>${esc(e.message)}</small><br><br><button class="btn primary" onclick="location.reload()">↻</button></div>`;
+  }
+})();
+</script>
+</body>
+</html>
