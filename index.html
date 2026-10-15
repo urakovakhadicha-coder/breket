@@ -303,13 +303,17 @@ async function api(action, data = {}) {
   if (!API_URL) throw new Error('not_configured');
   const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action, initData: tg.initData, ...data }) });
-  const j = await r.json();
-  if (!j.ok) throw new Error(j.error || 'error');
+  const txt = await r.text();
+  let j;
+  try { j = JSON.parse(txt); } catch (e) { const er = new Error('bad_response'); er.detail = txt.slice(0, 120); throw er; }
+  if (!j.ok) { const er = new Error(j.error || 'error'); er.detail = j.detail; throw er; }
   return j;
 }
 function errText(e) {
   const m = { slot_taken: 'slotTaken', too_late: 'tooLate', changed_by_admin: 'changed', limit: 'limit' }[e.message];
-  return m ? t(m) : t('error');
+  if (m) return t(m);
+  const d = e.detail || e.message;
+  return t('error') + (d && d !== 'error' ? ` [${d}]` : '');
 }
 
 /* ------------------------------------------------------------------ демо-данные (вне Telegram) */
@@ -571,6 +575,15 @@ async function doBook() {
     haptic('success');
     S.busy = false; go('done');
   } catch (e) {
+    // запись могла пройти, а ответ потеряться — проверяем
+    if (!['slot_taken', 'too_late', 'limit', 'changed_by_admin', 'need_registration'].includes(e.message)) {
+      try {
+        const want = { day: S.day, time: S.time, branch: S.branch }, moved = !!S.moveFrom;
+        await refresh();
+        const b = S.bookings.find(x => x.day === want.day && x.time === want.time && x.branch === want.branch);
+        if (b) { S.moveFrom = null; S.result = { ...b, moved }; haptic('success'); S.busy = false; go('done'); return; }
+      } catch (_) {}
+    }
     S.busy = false; haptic('error'); toast(errText(e));
     if (e.message === 'slot_taken') {
       try { S.slots = (await api('slots')).slots; } catch (_) {}
