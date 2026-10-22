@@ -200,6 +200,17 @@ h3 { font-size: 16px; font-weight: 800; margin: 0 0 14px; }
   .hide-m { display: none; }
 }
 .mob-only { display: none !important; }
+
+textarea.input { min-height: 110px; resize: vertical; line-height: 1.45; }
+.slot.keldi { background: linear-gradient(90deg, var(--ok-soft), transparent 45%); }
+.slot.noshow { background: linear-gradient(90deg, var(--danger-soft), transparent 45%); }
+.slot.busy .nm { color: var(--muted); font-weight: 600; }
+.ib.on { background: var(--ok); color: #fff; border-color: var(--ok); }
+.bubble { background: var(--card2); border-radius: 16px 16px 16px 4px; padding: 12px 14px; white-space: pre-wrap; font-weight: 500; max-width: 420px; border: 1px solid var(--line); }
+.bubble .bbtn { margin-top: 10px; text-align: center; padding: 8px; border-radius: 10px; background: var(--brand-soft); color: var(--brand-deep); font-weight: 700; font-size: 13px; }
+.notice { padding: 12px 14px; border-radius: 12px; background: var(--warn-soft); color: var(--warn); font-weight: 600; font-size: 13.5px; margin-bottom: 14px; }
+.kv { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kv:last-child { border-bottom: 0; }
 </style>
 </head>
 <body>
@@ -215,80 +226,82 @@ const IC = {
   cal: ic('<rect x="3" y="4.5" width="18" height="17" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>'),
   users: ic('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/>'),
   chart: ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
-  gear: ic('<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/>'),
+  gear: ic('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>'),
   shield: ic('<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/>'),
+  mega: ic('<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
   plus: ic('<path d="M12 5v14M5 12h14"/>'),
   left: ic('<path d="M15 18l-6-6 6-6"/>'),
   right: ic('<path d="M9 18l6-6-6-6"/>'),
   check: ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
   x: ic('<path d="M6 6l12 12M18 6L6 18"/>'),
   edit: ic('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>'),
-  undo: ic('<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>'),
-  lock: ic('<rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>'),
-  unlock: ic('<rect x="5" y="11" width="14" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/>'),
-  ban: ic('<circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/>'),
+  move: ic('<path d="M8 7h12M16 3l4 4-4 4M16 17H4M8 13l-4 4 4 4"/>'),
   dl: ic('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'),
   out: ic('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/>'),
   phone: ic('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'),
-  trash: ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')
+  trash: ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+  send: ic('<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>'),
+  sheet: ic('<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M4 9h16M4 15h16M10 3v18"/>')
 };
 
 /* ======================================================== тексты */
 const L = {
   uz: {
     title: 'Admin panel', login: 'Login', password: 'Parol', signIn: 'Kirish', signOut: 'Chiqish',
-    nav: { schedule: 'Jadval', patients: 'Bemorlar', stats: 'Statistika', settings: 'Sozlamalar', admins: 'Adminlar' },
-    today: 'Bugun', add: 'Yozish', free: "Bo'sh", blocked: 'Yopilgan', dayOff: 'Dam olish kuni', dayClosed: 'Kun yopilgan',
-    closeDay: 'Kunni yopish', openDay: 'Kunni ochish', closeSlot: 'Vaqtni yopish', openSlot: 'Ochish',
-    booked: 'band', freeN: "bo'sh", cancelledList: 'Bekor qilinganlar',
-    src: { bot: 'Bot', admin: 'Admin', sheet: 'Jadval' }, kelaman: 'Kelaman',
-    st: { active: 'Kutilmoqda', came: 'Keldi', noshow: 'Kelmadi', cancelled: 'Bekor', moved: "Ko'chirilgan" },
-    came: 'Keldi', noshow: 'Kelmadi', edit: 'Tahrirlash', cancel: 'Bekor qilish', restore: 'Qaytarish', del: "O'chirish",
-    askCancel: 'Yozuvni bekor qilasizmi?', askDelete: "Yozuv butunlay o'chiriladi. Davom etasizmi?",
-    newBooking: 'Yangi yozuv', editBooking: 'Yozuvni tahrirlash', name: 'Ism familiya', phone: 'Telefon', branch: 'Filial', date: 'Sana', time: 'Vaqt', note: 'Izoh',
-    otherTime: 'Boshqa vaqt (jadvaldan tashqari)', notify: "Bemorga Telegramda xabar yuborish", save: 'Saqlash', close: 'Yopish', noFree: "Bu kunda bo'sh vaqt yo'q",
-    blockNote: 'Sababi (ixtiyoriy)', search: 'Ism yoki telefon', visits: 'Tashriflar', lastVisit: 'Oxirgi', tg: 'Telegram',
-    history: 'Tarix', bookFor: 'Yozish', patient: 'Bemor', saved: 'Saqlandi', done: 'Bajarildi',
-    period: { week: '7 kun', month: '30 kun', thisMonth: 'Shu oy', next: 'Keyingi 30 kun' }, from: 'dan', to: 'gacha',
-    k: { total: 'Jami tashriflar', came: 'Keldi', noshow: 'Kelmadi', pending: 'Kutilmoqda', cancelled: 'Bekor qilingan', rate: 'Kelish foizi', confirmed: '«Kelaman» bosgan' },
-    sources: 'Yangi yozuvlar manbai', byBranch: 'Filiallar', byDay: 'Kunlar kesimida', export: 'Excel (CSV)',
-    general: 'Umumiy', workDays: 'Ish kunlari', hours: 'Ish vaqti (birinchi va oxirgi qabul)', lunch: 'Tushlik',
-    addrUz: "Manzil (o'zbekcha)", addrRu: 'Manzil (ruscha)', lmUz: "Mo'ljal (o'zbekcha)", lmRu: "Mo'ljal (ruscha)", map: 'Xarita havolasi',
-    step: 'Qabul davomiyligi, daqiqa', capacity: 'Bir vaqtga necha bemor', horizon: 'Necha kun oldinga yozish mumkin', minHours: 'Bugunga — kamida necha soat oldin',
-    r1: 'Eslatma kechasi', r2: 'Eslatma ertalab', adminUser: "Admin nik (Telegram, bemorlar uchun)",
+    nav: { schedule: 'Jadval', broadcast: 'Rassilka', stats: 'Statistika', users: 'Bot bemorlari', settings: 'Sozlamalar', admins: 'Adminlar' },
+    today: 'Bugun', add: 'Yozish', free: "Bo'sh", busy: 'Band', noAct: "Bu kunda aktivatsiya yo'q", noSheet: "Jadvalda bu oy uchun list yo'q",
+    booked: 'band', freeN: "bo'sh", bot: 'Bot', kelaman: 'Kelaman', keldi: 'Keldi', kelmadi: 'Kelmadi',
+    markCame: 'Keldi deb belgilash', edit: 'Tahrirlash', move: "Ko'chirish", cancel: 'Bekor qilish',
+    askCancel: "Yozuvni bekor qilasizmi? Jadvaldagi bemor ma'lumotlari o'chiriladi.",
+    newBooking: 'Yangi yozuv', editBooking: 'Tahrirlash', moveBooking: "Yozuvni ko'chirish",
+    name: 'Ism familiya', phone: 'Telefon', branch: 'Filial', date: 'Sana', time: 'Vaqt', kanal: 'Kanal', izoh: 'Izoh',
+    notify: 'Bemorga Telegramda xabar yuborish', save: 'Saqlash', close: 'Yopish', noFree: "Bu kunda bo'sh vaqt yo'q", saved: 'Saqlandi', done: 'Bajarildi',
+    linked: 'Bemor bot orqali topildi — eslatmalar yuboriladi', openSheet: 'Jadvalni ochish',
+    bcTitle: 'Bot orqali xabar yuborish', bcUz: "Matn (o'zbekcha)", bcRu: 'Matn (ruscha)', bcWho: 'Kimga', bcAll: 'Hammaga', bcBtn: '«Yozilish» tugmasini qo‘shish',
+    bcPreview: "Ko'rinishi", bcSend: 'Yuborish', bcAsk: n => `${n} kishiga yuborilsinmi?`, bcDone: (s, t) => `Yuborildi: ${s} / ${t}`, bcHint: "Har bir bemor o'z tilida oladi. Bitta matn yozsangiz — hammaga shu yuboriladi.",
+    people: 'kishi', blocked: 'Botni bloklagan',
+    period: { week: '7 kun', month: '30 kun', thisMonth: 'Shu oy', next: 'Keyingi 30 kun' },
+    k: { total: 'Aktivatsiyaga yozilganlar', came: 'Keldi', noshow: 'Kelmadi (status)', unmarked: 'Belgilanmagan', upcoming: 'Kutilmoqda', rate: 'Kelish foizi', free: "Bo'sh qolgan joylar" },
+    botStats: 'Bot orqali', botK: { created: 'Yozuvlar', cancelled: 'Bekor', moved: "Ko'chirilgan", confirmed: '«Kelaman»' },
+    byKanal: 'Kanal bo‘yicha', byBranch: 'Filiallar', byDay: 'Kunlar kesimida', export: 'Excel (CSV)',
+    search: 'Ism yoki telefon', lang: 'Til', activeB: 'Faol yozuv', total: 'Jami',
+    addresses: 'Filial manzillari', addrUz: "Manzil (o'zbekcha)", addrRu: 'Manzil (ruscha)', lmUz: "Mo'ljal (o'zbekcha)", lmRu: "Mo'ljal (ruscha)", map: 'Xarita havolasi',
+    general: 'Umumiy', adminUser: 'Admin nik (Telegram, bemorlar uchun)', botKanal: 'Bot yozuvlari uchun «Kanal» qiymati', empty: "(bo'sh qoldirish)",
     admins: 'Adminlar', addAdmin: "Admin qo'shish", role: 'Roli', owner: 'Egasi', adminRole: 'Admin', remove: "O'chirish",
     myPassword: "Parolni o'zgartirish", oldPw: 'Eski parol', newPw: 'Yangi parol (kamida 6 belgi)', log: 'Amallar tarixi',
-    errors: { login_failed: "Login yoki parol noto'g'ri", too_many_attempts: "Ko'p urinish. 15 daqiqadan keyin urinib ko'ring", slot_taken: "Bu vaqt band yoki jadvalda yo'q",
-      forbidden: "Ruxsat yo'q (faqat egasi)", exists: 'Bunday login bor', bad_request: "Ma'lumotlar noto'g'ri", not_found: 'Topilmadi', error: 'Xatolik', network: "Internet bilan muammo", not_configured: "config.js da API manzili ko'rsatilmagan" },
+    errors: { login_failed: "Login yoki parol noto'g'ri", too_many_attempts: "Ko'p urinish. 15 daqiqadan keyin urinib ko'ring", slot_taken: 'Bu vaqt band',
+      row_changed: "Jadvaldagi qator o'zgargan — sahifa yangilandi", forbidden: "Ruxsat yo'q (faqat egasi)", exists: 'Bunday login bor', bad_request: "Ma'lumotlar noto'g'ri",
+      not_found: 'Topilmadi', error: 'Xatolik', network: 'Internet bilan muammo', not_configured: "config.js da API manzili ko'rsatilmagan" },
     days: ['Ya', 'Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha'], months: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'],
     daysFull: ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'],
     fmt: (d, m, w) => `${d}-${m}, ${w}`
   },
   ru: {
     title: 'Админ-панель', login: 'Логин', password: 'Пароль', signIn: 'Войти', signOut: 'Выйти',
-    nav: { schedule: 'Расписание', patients: 'Пациенты', stats: 'Статистика', settings: 'Настройки', admins: 'Админы' },
-    today: 'Сегодня', add: 'Записать', free: 'Свободно', blocked: 'Закрыто', dayOff: 'Выходной', dayClosed: 'День закрыт',
-    closeDay: 'Закрыть день', openDay: 'Открыть день', closeSlot: 'Закрыть время', openSlot: 'Открыть',
-    booked: 'занято', freeN: 'свободно', cancelledList: 'Отменённые',
-    src: { bot: 'Бот', admin: 'Админ', sheet: 'Таблица' }, kelaman: 'Придёт',
-    st: { active: 'Ожидается', came: 'Пришёл', noshow: 'Не пришёл', cancelled: 'Отменена', moved: 'Перенесена' },
-    came: 'Пришёл', noshow: 'Не пришёл', edit: 'Изменить', cancel: 'Отменить', restore: 'Вернуть', del: 'Удалить',
-    askCancel: 'Отменить запись?', askDelete: 'Запись будет удалена навсегда. Продолжить?',
-    newBooking: 'Новая запись', editBooking: 'Изменить запись', name: 'Имя и фамилия', phone: 'Телефон', branch: 'Филиал', date: 'Дата', time: 'Время', note: 'Комментарий',
-    otherTime: 'Другое время (вне сетки)', notify: 'Отправить пациенту сообщение в Telegram', save: 'Сохранить', close: 'Закрыть', noFree: 'На этот день свободного времени нет',
-    blockNote: 'Причина (необязательно)', search: 'Имя или телефон', visits: 'Визиты', lastVisit: 'Последний', tg: 'Telegram',
-    history: 'История', bookFor: 'Записать', patient: 'Пациент', saved: 'Сохранено', done: 'Готово',
-    period: { week: '7 дней', month: '30 дней', thisMonth: 'Этот месяц', next: 'Следующие 30 дней' }, from: 'с', to: 'по',
-    k: { total: 'Всего визитов', came: 'Пришли', noshow: 'Не пришли', pending: 'Ожидаются', cancelled: 'Отменено', rate: 'Явка', confirmed: 'Нажали «Приду»' },
-    sources: 'Откуда новые записи', byBranch: 'По филиалам', byDay: 'По дням', export: 'Excel (CSV)',
-    general: 'Общие', workDays: 'Рабочие дни', hours: 'Часы работы (первый и последний приём)', lunch: 'Обед',
-    addrUz: 'Адрес (узбекский)', addrRu: 'Адрес (русский)', lmUz: 'Ориентир (узбекский)', lmRu: 'Ориентир (русский)', map: 'Ссылка на карту',
-    step: 'Длительность приёма, мин', capacity: 'Пациентов на одно время', horizon: 'На сколько дней вперёд запись', minHours: 'На сегодня — не раньше чем через N часов',
-    r1: 'Напоминание вечером', r2: 'Напоминание утром', adminUser: 'Ник админа (Telegram, для пациентов)',
+    nav: { schedule: 'Расписание', broadcast: 'Рассылка', stats: 'Статистика', users: 'Пациенты бота', settings: 'Настройки', admins: 'Админы' },
+    today: 'Сегодня', add: 'Записать', free: 'Свободно', busy: 'Занято', noAct: 'В этот день нет активаций', noSheet: 'В таблице нет листа на этот месяц',
+    booked: 'занято', freeN: 'свободно', bot: 'Бот', kelaman: 'Придёт', keldi: 'Пришёл', kelmadi: 'Не пришёл',
+    markCame: 'Отметить «Keldi»', edit: 'Изменить', move: 'Перенести', cancel: 'Отменить',
+    askCancel: 'Отменить запись? Данные пациента в строке таблицы будут очищены.',
+    newBooking: 'Новая запись', editBooking: 'Изменить', moveBooking: 'Перенос записи',
+    name: 'Имя и фамилия', phone: 'Телефон', branch: 'Филиал', date: 'Дата', time: 'Время', kanal: 'Канал', izoh: 'Комментарий',
+    notify: 'Отправить пациенту сообщение в Telegram', save: 'Сохранить', close: 'Закрыть', noFree: 'На этот день свободного времени нет', saved: 'Сохранено', done: 'Готово',
+    linked: 'Пациент найден в боте — напоминания будут приходить', openSheet: 'Открыть таблицу',
+    bcTitle: 'Рассылка через бота', bcUz: 'Текст (узбекский)', bcRu: 'Текст (русский)', bcWho: 'Кому', bcAll: 'Всем', bcBtn: 'Добавить кнопку «Записаться»',
+    bcPreview: 'Как увидит пациент', bcSend: 'Отправить', bcAsk: n => `Отправить ${n} пациентам?`, bcDone: (s, t) => `Отправлено: ${s} из ${t}`, bcHint: 'Каждый пациент получит текст на своём языке. Если заполнить один — всем уйдёт он.',
+    people: 'чел.', blocked: 'Заблокировал бота',
+    period: { week: '7 дней', month: '30 дней', thisMonth: 'Этот месяц', next: 'Следующие 30 дней' },
+    k: { total: 'Записано на активацию', came: 'Пришли', noshow: 'Не пришли (статус)', unmarked: 'Не отмечено', upcoming: 'Ожидаются', rate: 'Явка', free: 'Свободных мест осталось' },
+    botStats: 'Через бота', botK: { created: 'Записей', cancelled: 'Отмен', moved: 'Переносов', confirmed: '«Приду»' },
+    byKanal: 'По каналам', byBranch: 'По филиалам', byDay: 'По дням', export: 'Excel (CSV)',
+    search: 'Имя или телефон', lang: 'Язык', activeB: 'Активная запись', total: 'Всего',
+    addresses: 'Адреса филиалов', addrUz: 'Адрес (узбекский)', addrRu: 'Адрес (русский)', lmUz: 'Ориентир (узбекский)', lmRu: 'Ориентир (русский)', map: 'Ссылка на карту',
+    general: 'Общие', adminUser: 'Ник админа (Telegram, для пациентов)', botKanal: 'Что писать в «Kanal» для записей из бота', empty: '(оставлять пустым)',
     admins: 'Админы', addAdmin: 'Добавить админа', role: 'Роль', owner: 'Владелец', adminRole: 'Админ', remove: 'Удалить',
     myPassword: 'Сменить пароль', oldPw: 'Старый пароль', newPw: 'Новый пароль (минимум 6 символов)', log: 'История действий',
-    errors: { login_failed: 'Неверный логин или пароль', too_many_attempts: 'Слишком много попыток. Попробуйте через 15 минут', slot_taken: 'Это время занято или его нет в расписании',
-      forbidden: 'Нет прав (только владелец)', exists: 'Такой логин уже есть', bad_request: 'Неверные данные', not_found: 'Не найдено', error: 'Ошибка', network: 'Проблема с интернетом', not_configured: 'В config.js не указан адрес API' },
+    errors: { login_failed: 'Неверный логин или пароль', too_many_attempts: 'Слишком много попыток. Попробуйте через 15 минут', slot_taken: 'Это время занято',
+      row_changed: 'Строка в таблице изменилась — страница обновлена', forbidden: 'Нет прав (только владелец)', exists: 'Такой логин уже есть', bad_request: 'Неверные данные',
+      not_found: 'Не найдено', error: 'Ошибка', network: 'Проблема с интернетом', not_configured: 'В config.js не указан адрес API' },
     days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'], months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
     daysFull: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
     fmt: (d, m, w) => `${d} ${m}, ${w}`
@@ -297,8 +310,8 @@ const L = {
 
 /* ======================================================== состояние и утилиты */
 const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
-const S = { lang: store.get('bc_lang') || ((navigator.language || '').startsWith('ru') ? 'ru' : 'uz'), token: store.get('bc_token'), admin: null, settings: null,
-  today: '', page: 'schedule', day: '', dayData: null, overview: null, statsRange: 'week' };
+const S = { lang: store.get('bc_lang') || ((navigator.language || '').startsWith('ru') ? 'ru' : 'uz'), token: store.get('bc_token'), admin: null,
+  today: '', page: 'schedule', day: '', dayData: null, overview: null, statsRange: 'month', branchOrder: [], settings: null, kanal: [] };
 const t = k => k.split('.').reduce((o, x) => o && o[x], L[S.lang]) ?? k;
 const $ = s => document.querySelector(s);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -310,9 +323,9 @@ const fmtPhone = p => { p = String(p || '').replace(/\D/g, '').slice(-9); return
 
 function toast(msg, err) {
   const el = $('#toast'); el.textContent = msg; el.className = 'toast show' + (err ? ' err' : '');
-  clearTimeout(toast._t); toast._t = setTimeout(() => { el.className = 'toast' + (err ? ' err' : ''); }, 3000);
+  clearTimeout(toast._t); toast._t = setTimeout(() => { el.className = 'toast' + (err ? ' err' : ''); }, 3200);
 }
-const errMsg = e => t('errors.' + e.message) !== 'errors.' + e.message && L[S.lang].errors[e.message] ? L[S.lang].errors[e.message] : L[S.lang].errors.error + ': ' + e.message;
+const errMsg = e => L[S.lang].errors[e.message] || (L[S.lang].errors.error + ': ' + (e.detail || e.message));
 
 async function api(action, data = {}) {
   if (!API_URL) throw new Error('not_configured');
@@ -320,10 +333,12 @@ async function api(action, data = {}) {
   try {
     r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ admin: true, token: S.token, action, ...data }) });
   } catch (e) { throw new Error('network'); }
-  const j = await r.json();
+  const txt = await r.text();
+  let j;
+  try { j = JSON.parse(txt); } catch (e) { const er = new Error('error'); er.detail = txt.slice(0, 120); throw er; }
   if (!j.ok) {
-    if (j.error === 'auth' && action !== 'login') { logout(true); }
-    throw new Error(j.error || 'error');
+    if (j.error === 'auth' && action !== 'login') logout(true);
+    const er = new Error(j.error || 'error'); er.detail = j.detail; throw er;
   }
   return j;
 }
@@ -340,32 +355,32 @@ function modal(html, onMount) {
   const f = o.querySelector('input:not([type=checkbox]),select'); f && f.focus();
 }
 function closeModal() { const o = $('#overlay'); o && o.remove(); }
-function panel(html) {
-  closePanel();
-  const p = document.createElement('div');
-  p.className = 'panel'; p.id = 'panel';
-  p.innerHTML = html;
-  document.body.appendChild(p);
-  return p;
-}
-function closePanel() { const p = $('#panel'); p && p.remove(); }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closePanel(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
 /* ======================================================== вход */
+function langSeg() {
+  return `<div class="seg">${['uz', 'ru'].map(l => `<button type="button" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${l.toUpperCase()}</button>`).join('')}</div>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-lang]');
+  if (!b) return;
+  S.lang = b.dataset.lang; store.set('bc_lang', S.lang);
+  S.admin ? renderShell() : renderLogin();
+});
 function renderLogin(err) {
   $('#root').innerHTML = `<div class="login"><form class="login-card" id="lf">
       <div class="logo"></div><h1>Breket Center</h1><p>${t('title')}</p>
       <div class="stack">
         <label class="f"><span>${t('login')}</span><input class="input" name="login" autocomplete="username" required></label>
         <label class="f"><span>${t('password')}</span><input class="input" name="password" type="password" autocomplete="current-password" required></label>
-        ${err ? `<div class="badge no" style="display:block;padding:9px 12px;border-radius:10px">${esc(err)}</div>` : ''}
+        ${err ? `<div class="badge no" style="display:block;padding:9px 12px;border-radius:10px;white-space:normal">${esc(err)}</div>` : ''}
         <button class="btn primary" style="width:100%;min-height:46px">${t('signIn')}</button>
         <div style="text-align:center">${langSeg()}</div>
       </div></form></div>`;
   $('#lf').onsubmit = async e => {
     e.preventDefault();
-    const fd = new FormData(e.target), b = e.target.querySelector('button.primary');
-    b.disabled = true;
+    const fd = new FormData(e.target);
+    e.target.querySelector('button.primary').disabled = true;
     try {
       const r = await api('login', { login: fd.get('login'), password: fd.get('password') });
       S.token = r.token; store.set('bc_token', r.token);
@@ -376,21 +391,12 @@ function renderLogin(err) {
 function logout(silent) {
   if (!silent && S.token) api('logout').catch(() => {});
   S.token = null; store.set('bc_token', null); S.admin = null;
-  closeModal(); closePanel(); renderLogin();
+  closeModal(); renderLogin();
 }
-function langSeg() {
-  return `<div class="seg" id="langSeg">${['uz', 'ru'].map(l => `<button type="button" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${l.toUpperCase()}</button>`).join('')}</div>`;
-}
-document.addEventListener('click', e => {
-  const b = e.target.closest('[data-lang]');
-  if (!b) return;
-  S.lang = b.dataset.lang; store.set('bc_lang', S.lang);
-  S.admin ? renderShell() : renderLogin();
-});
 
 /* ======================================================== каркас */
-const PAGES = ['schedule', 'patients', 'stats', 'settings', 'admins'];
-const PAGE_ICON = { schedule: IC.cal, patients: IC.users, stats: IC.chart, settings: IC.gear, admins: IC.shield };
+const PAGES = ['schedule', 'broadcast', 'stats', 'users', 'settings', 'admins'];
+const PAGE_ICON = { schedule: IC.cal, broadcast: IC.mega, stats: IC.chart, users: IC.users, settings: IC.gear, admins: IC.shield };
 function renderShell() {
   document.documentElement.lang = S.lang;
   $('#root').innerHTML = `<div class="shell">
@@ -406,14 +412,13 @@ function renderShell() {
     <main class="main" id="main"></main></div>`;
   document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => { S.page = b.dataset.page; location.hash = S.page; renderShell(); });
   $('#logoutBtn').onclick = () => logout();
-  ({ schedule: pageSchedule, patients: pagePatients, stats: pageStats, settings: pageSettings, admins: pageAdmins })[S.page]();
+  ({ schedule: pageSchedule, broadcast: pageBroadcast, stats: pageStats, users: pageUsers, settings: pageSettings, admins: pageAdmins })[S.page]();
 }
 function head(title, right = '') {
   return `<div class="head"><h1>${title}</h1>${right}
     <span class="mob-only">${langSeg()}</span>
     <button class="btn sm mob-only" onclick="logout()">${IC.out}</button></div>`;
 }
-const loading = () => { $('#main').innerHTML += '<div class="spin"></div>'; };
 
 /* ======================================================== расписание */
 async function pageSchedule() {
@@ -430,13 +435,13 @@ async function pageSchedule() {
   $('#nextD').onclick = () => setDay(addDays(S.day, 1));
   $('#todayD').onclick = () => setDay(S.today);
   $('#dayIn').onchange = e => e.target.value && setDay(e.target.value);
-  $('#addB').onclick = () => bookingModal({ day: S.day, branch: firstWorking() });
+  $('#addB').onclick = () => bookingModal({ day: S.day, branch: firstBranch() });
   await Promise.all([loadStrip(), loadDay()]);
 }
-function firstWorking() {
+function firstBranch() {
   const d = S.dayData;
-  if (d) for (const b of S.settings.branchOrder) if (d.branches[b].working) return b;
-  return S.settings.branchOrder.find(b => (S.settings.branches[b].days || []).includes(wd(S.day))) || S.settings.branchOrder[0];
+  if (d) for (const b of S.branchOrder) if (d.branches[b].rows.length) return b;
+  return S.branchOrder[0];
 }
 async function setDay(day) {
   S.day = day;
@@ -445,8 +450,7 @@ async function setDay(day) {
   await Promise.all([inStrip ? Promise.resolve(drawStrip()) : loadStrip(), loadDay()]);
 }
 async function loadStrip() {
-  const from = addDays(S.day, -3);
-  try { S.overview = (await api('overview', { from, days: 21 })).days; drawStrip(); } catch (e) { toast(errMsg(e), true); }
+  try { S.overview = (await api('overview', { from: addDays(S.day, -3), days: 21 })).days; drawStrip(); } catch (e) { toast(errMsg(e), true); }
 }
 function drawStrip() {
   const el = $('#strip'); if (!el) return;
@@ -467,204 +471,202 @@ async function reloadDay() { await Promise.all([loadDay(), loadStrip()]); }
 function drawDay() {
   const d = S.dayData, box = $('#dayBox');
   if (!box || d.day !== S.day) return;
-  const shown = S.settings.branchOrder.filter(b => d.branches[b].working || d.branches[b].bookings.length || d.branches[b].blocks.length);
-  if (!shown.length) {
-    box.innerHTML = `<div class="card closed">${fmtDay(d.day)} — ${t('dayOff')}</div>`;
-    return;
-  }
-  box.innerHTML = `<div class="cols">${shown.map(b => branchCard(b, d.branches[b], d.capacity)).join('')}</div>`;
+  if (!d.sheet) { box.innerHTML = `<div class="card closed">${fmtDay(d.day)} — ${t('noSheet')}</div>`; return; }
+  const shown = S.branchOrder.filter(b => d.branches[b].rows.length);
+  if (!shown.length) { box.innerHTML = `<div class="card closed">${fmtDay(d.day)} — ${t('noAct')}</div>`; return; }
+  box.innerHTML = `<div class="cols">${shown.map(b => branchCard(b, d.branches[b].rows)).join('')}</div>`;
   bindDay();
 }
 
-function bookingRow(bk, offgrid) {
-  const st = bk.status;
+function rowHtml(b, r) {
+  const past = S.day < S.today;
+  if (!r.name) {
+    if (r.busyBy) return `<div class="slot busy"><div class="tm">${r.time}</div><div><div class="nm">${t('busy')}: ${esc(r.busyBy.join(', '))}</div></div><div></div></div>`;
+    return `<div class="slot free"><div class="tm">${r.time}</div><div class="nm">${t('free')}</div>
+      <div class="acts">${past ? '' : `<button class="btn sm" data-a="add" data-branch="${esc(b)}" data-time="${r.time}">${IC.plus} ${t('add')}</button>`}</div></div>`;
+  }
+  const no = /кемиди|келмади|kelmadi|не приш/i.test(r.status || '');
+  const cls = r.keldi ? 'keldi' : (no ? 'noshow' : '');
   const meta = [
-    `<span class="badge ${bk.source === 'bot' ? 'bot' : ''}">${t('src.' + bk.source) || bk.source}</span>`,
-    bk.confirmed ? `<span class="badge ok">✓ ${t('kelaman')}</span>` : '',
-    st !== 'active' ? `<span class="badge ${st === 'came' ? 'ok' : st === 'noshow' ? 'no' : ''}">${t('st.' + st)}</span>` : ''
+    r.bot ? `<span class="badge bot">${t('bot')}</span>` : '',
+    r.bot && r.bot.confirmed ? `<span class="badge ok">✓ ${t('kelaman')}</span>` : '',
+    r.keldi ? `<span class="badge ok">${t('keldi')}</span>` : '',
+    r.channel ? `<span class="badge">${esc(r.channel)}</span>` : '',
+    r.status ? `<span class="badge ${no ? 'no' : ''}">${esc(r.status)}</span>` : ''
   ].join('');
-  const acts = st === 'active'
-    ? `<button class="ib ok" title="${t('came')}" data-a="came" data-id="${bk.id}">${IC.check}</button>
-       <button class="ib no" title="${t('noshow')}" data-a="noshow" data-id="${bk.id}">${IC.ban}</button>
-       <button class="ib" title="${t('edit')}" data-a="edit" data-id="${bk.id}">${IC.edit}</button>
-       <button class="ib no" title="${t('cancel')}" data-a="cancel" data-id="${bk.id}">${IC.x}</button>`
-    : `<button class="btn sm" data-a="restore" data-id="${bk.id}">${IC.undo} ${t('restore')}</button>`;
-  return `<div class="slot ${st} ${offgrid ? 'offgrid' : ''}">
-    <div class="tm">${bk.time}</div>
-    <div><div class="nm">${esc(bk.name)}</div><div class="ph"><a href="tel:+998${esc(bk.phone)}">${fmtPhone(bk.phone)}</a></div>
-      <div class="meta">${meta}</div>${bk.note ? `<div class="note">${esc(bk.note)}</div>` : ''}</div>
-    <div class="acts">${acts}</div></div>`;
+  return `<div class="slot ${cls}">
+    <div class="tm">${r.time}</div>
+    <div><div class="nm">${esc(r.name)}</div>${r.phone ? `<div class="ph"><a href="tel:+998${esc(r.phone)}">${fmtPhone(r.phone)}</a></div>` : ''}
+      <div class="meta">${meta}</div>${r.izoh ? `<div class="note">${esc(r.izoh)}</div>` : ''}</div>
+    <div class="acts">
+      <button class="ib ${r.keldi ? 'on' : 'ok'}" title="${t('markCame')}" data-a="keldi" data-row="${r.row}">${IC.check}</button>
+      <button class="ib" title="${t('edit')}" data-a="edit" data-row="${r.row}">${IC.edit}</button>
+      ${past ? '' : `<button class="ib" title="${t('move')}" data-a="move" data-row="${r.row}">${IC.move}</button>`}
+      <button class="ib no" title="${t('cancel')}" data-a="cancel" data-row="${r.row}">${IC.x}</button>
+    </div></div>`;
 }
-
-function branchCard(b, x, capacity) {
-  const live = x.bookings.filter(k => ['active', 'came', 'noshow'].includes(k.status));
-  const cancelled = x.bookings.filter(k => k.status === 'cancelled');
-  const dayBlock = x.blocks.find(k => !k.time);
-  const freeCount = x.dayBlocked ? 0 : x.schedule.filter(tm => !x.blocks.some(k => k.time === tm) && live.filter(k => k.time === tm).length < capacity).length;
-  let rows = '';
-  x.times.forEach(tm => {
-    const here = live.filter(k => k.time === tm);
-    const inGrid = x.schedule.includes(tm);
-    here.forEach(k => { rows += bookingRow(k, !inGrid); });
-    if (!inGrid) return;
-    const slotBlock = x.blocks.find(k => k.time === tm);
-    if (slotBlock) {
-      rows += `<div class="slot blocked"><div class="tm">${tm}</div><div><div class="nm muted">${IC.lock.replace('<svg', '<svg width="14" height="14" style="vertical-align:-2px"')} ${t('blocked')}</div>${slotBlock.note ? `<div class="note">${esc(slotBlock.note)}</div>` : ''}</div>
-        <div class="acts"><button class="btn sm" data-a="unblock" data-id="${slotBlock.id}">${IC.unlock} ${t('openSlot')}</button></div></div>`;
-    } else if (!x.dayBlocked && here.length < capacity) {
-      rows += `<div class="slot free"><div class="tm">${tm}</div><div class="nm">${t('free')}</div>
-        <div class="acts"><button class="ib" title="${t('closeSlot')}" data-a="block" data-branch="${b}" data-time="${tm}">${IC.lock}</button>
-        <button class="btn sm" data-a="add" data-branch="${b}" data-time="${tm}">${IC.plus} ${t('add')}</button></div></div>`;
-    }
-  });
-  const dayBtn = dayBlock
-    ? `<button class="btn sm" data-a="unblock" data-id="${dayBlock.id}">${IC.unlock} ${t('openDay')}</button>`
-    : x.working ? `<button class="btn sm" data-a="blockDay" data-branch="${b}">${IC.lock} ${t('closeDay')}</button>` : '';
+function branchCard(b, rows) {
+  const booked = rows.filter(r => r.name).length, free = rows.filter(r => !r.name && !r.busyBy).length;
   return `<section class="card">
-    <div class="bcard-h"><b>${esc(b)}</b>
-      <span class="badge">${live.length} ${t('booked')}</span>${x.working ? `<span class="badge bot">${freeCount} ${t('freeN')}</span>` : `<span class="badge warn">${t('dayOff')}</span>`}
-      <span class="sp"></span>${dayBtn}</div>
-    ${x.dayBlocked ? `<div class="closed">${IC.lock.replace('<svg', '<svg width="18" height="18" style="vertical-align:-3px"')} ${t('dayClosed')}${dayBlock && dayBlock.note ? ' — ' + esc(dayBlock.note) : ''}</div>` : ''}
-    ${rows || (x.dayBlocked ? '' : `<div class="empty">—</div>`)}
-    ${cancelled.length ? `<details class="cx"><summary>${t('cancelledList')} (${cancelled.length})</summary>${cancelled.map(k => bookingRow(k)).join('')}</details>` : ''}
-  </section>`;
+    <div class="bcard-h"><b>${esc(b)}</b><span class="badge">${booked} ${t('booked')}</span><span class="badge bot">${free} ${t('freeN')}</span></div>
+    ${rows.map(r => rowHtml(b, r)).join('')}</section>`;
 }
-
-function findBooking(id) {
-  for (const b of Object.values(S.dayData.branches)) { const k = b.bookings.find(x => x.id === id); if (k) return k; }
+function findRow(row) {
+  for (const b of S.branchOrder) { const r = S.dayData.branches[b].rows.find(x => x.row === +row); if (r) return { ...r, branch: b }; }
   return null;
 }
 function bindDay() {
   $('#dayBox').querySelectorAll('[data-a]').forEach(el => el.onclick = async () => {
-    const a = el.dataset.a, id = el.dataset.id;
+    const a = el.dataset.a, r = el.dataset.row ? findRow(el.dataset.row) : null;
     try {
-      if (a === 'came' || a === 'noshow') { await api('setStatus', { id, status: a }); toast(t('st.' + a)); }
-      else if (a === 'restore') { await api('setStatus', { id, status: 'active' }); toast(t('done')); }
-      else if (a === 'cancel') {
-        if (!confirm(t('askCancel'))) return;
-        const bk = findBooking(id);
-        await api('setStatus', { id, status: 'cancelled', notify: !!(bk && bk.tg) });
-        toast(t('st.cancelled'));
-      }
-      else if (a === 'edit') return bookingModal(findBooking(id));
-      else if (a === 'add') return bookingModal({ day: S.day, branch: el.dataset.branch, time: el.dataset.time });
-      else if (a === 'block' || a === 'blockDay') {
-        const note = prompt(t('blockNote'), '');
-        if (note === null) return;
-        await api('block', { branch: el.dataset.branch, day: S.day, time: a === 'block' ? el.dataset.time : '', note });
+      if (a === 'add') return bookingModal({ day: S.day, branch: el.dataset.branch, time: el.dataset.time });
+      if (a === 'edit') return editModal(r);
+      if (a === 'move') return moveModal(r);
+      if (a === 'keldi') { el.disabled = true; await api('setKeldi', { row: r.row, day: S.day, value: !r.keldi }); toast(r.keldi ? t('done') : t('keldi')); }
+      if (a === 'cancel') {
+        if (!confirm(t('askCancel') + '\n\n' + r.name + ' · ' + r.time)) return;
+        await api('cancelBooking', { row: r.row, day: S.day, name: r.name, notify: true });
         toast(t('done'));
       }
-      else if (a === 'unblock') { await api('unblock', { id }); toast(t('done')); }
       await reloadDay();
-    } catch (e) { toast(errMsg(e), true); }
+    } catch (e) { toast(errMsg(e), true); if (e.message === 'row_changed') reloadDay(); }
   });
 }
 
-/* ------------------------------------------------ окно записи (новая / изменить) */
+/* ------------------------------------------------ окна записи */
+function timesSelect(sel, branch, day, keep) {
+  sel.innerHTML = '<option>…</option>';
+  return api('freeTimes', { branch, day }).then(r => {
+    const times = r.times.slice();
+    if (keep && !times.includes(keep)) times.unshift(keep);
+    sel.innerHTML = times.length ? times.map(x => `<option ${x === keep ? 'selected' : ''}>${x}</option>`).join('') : `<option value="">${t('noFree')}</option>`;
+  }).catch(e => { sel.innerHTML = `<option value="">${esc(errMsg(e))}</option>`; });
+}
+const kanalOptions = cur => `<option value="">—</option>` + S.kanal.map(k => `<option ${k === cur ? 'selected' : ''}>${esc(k)}</option>`).join('')
+  + (cur && !S.kanal.includes(cur) ? `<option selected>${esc(cur)}</option>` : '');
+
 function bookingModal(bk) {
-  const isNew = !bk.id;
-  const branches = S.settings.branchOrder;
-  modal(`<h2>${isNew ? t('newBooking') : t('editBooking')}</h2>
+  modal(`<h2>${t('newBooking')}</h2>
     <form id="bf" class="stack">
-      <label class="f"><span>${t('name')}</span><input class="input" name="name" required minlength="2" maxlength="60" value="${esc(bk.name || '')}"></label>
-      <label class="f"><span>${t('phone')}</span><input class="input" name="phone" required inputmode="tel" placeholder="90 123 45 67" value="${bk.phone ? fmtPhone(bk.phone) : ''}"></label>
+      <label class="f"><span>${t('name')}</span><input class="input" name="name" required minlength="2" maxlength="60"></label>
+      <label class="f"><span>${t('phone')}</span><input class="input" name="phone" required inputmode="tel" placeholder="90 123 45 67"></label>
       <div class="grid2">
-        <label class="f"><span>${t('branch')}</span><select class="input" name="branch">${branches.map(b => `<option ${b === bk.branch ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>
-        <label class="f"><span>${t('date')}</span><input class="input" type="date" name="day" required value="${bk.day || S.day}"></label>
+        <label class="f"><span>${t('branch')}</span><select class="input" name="branch">${S.branchOrder.map(b => `<option ${b === bk.branch ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>
+        <label class="f"><span>${t('date')}</span><input class="input" type="date" name="day" required value="${bk.day}"></label>
       </div>
-      <label class="f"><span>${t('time')}</span><select class="input" name="time" id="timeSel"></select></label>
-      <label class="check"><input type="checkbox" name="force" id="forceCb"> ${t('otherTime')}</label>
-      <input class="input" name="timeFree" id="timeFree" type="time" step="300" style="display:none">
-      <label class="f"><span>${t('note')}</span><input class="input" name="note" maxlength="300" value="${esc(bk.note || '')}"></label>
-      ${!isNew && bk.tg ? `<label class="check"><input type="checkbox" name="notify" checked> ${t('notify')}</label>` : ''}
+      <div class="grid2">
+        <label class="f"><span>${t('time')}</span><select class="input" name="time"></select></label>
+        ${S.kanal.length ? `<label class="f"><span>${t('kanal')}</span><select class="input" name="channel">${kanalOptions('')}</select></label>` : ''}
+      </div>
+      <label class="f"><span>${t('izoh')}</span><input class="input" name="izoh" maxlength="300"></label>
       <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('save')}</button></div>
     </form>`, o => {
     const f = o.querySelector('#bf');
-    const loadTimes = async () => {
-      const sel = $('#timeSel');
-      sel.innerHTML = '<option>…</option>';
-      try {
-        const r = await api('freeTimes', { branch: f.branch.value, day: f.day.value, ignoreId: bk.id });
-        let times = r.times.slice();
-        if (!isNew && f.branch.value === bk.branch && f.day.value === bk.day && !times.includes(bk.time)) times.push(bk.time);
-        times.sort();
-        sel.innerHTML = times.length ? times.map(x => `<option ${x === bk.time ? 'selected' : ''}>${x}</option>`).join('') : `<option value="">${t('noFree')}</option>`;
-      } catch (e) { sel.innerHTML = `<option value="">${esc(errMsg(e))}</option>`; }
-    };
-    f.branch.onchange = loadTimes; f.day.onchange = loadTimes;
-    $('#forceCb').onchange = e => { $('#timeFree').style.display = e.target.checked ? '' : 'none'; $('#timeSel').disabled = e.target.checked; if (e.target.checked && !$('#timeFree').value) $('#timeFree').value = $('#timeSel').value || '12:00'; };
-    loadTimes();
+    const load = () => timesSelect(f.time, f.branch.value, f.day.value, bk.time);
+    f.branch.onchange = load; f.day.onchange = load; load();
     f.onsubmit = async e => {
       e.preventDefault();
-      const force = $('#forceCb').checked;
-      const time = force ? $('#timeFree').value : $('#timeSel').value;
-      if (!time) return toast(t('noFree'), true);
-      const data = { name: f.name.value, phone: f.phone.value, branch: f.branch.value, day: f.day.value, time, note: f.note.value, force };
-      if (f.notify) data.notify = f.notify.checked;
+      if (!f.time.value) return toast(t('noFree'), true);
       const btn = f.querySelector('.btn.primary'); btn.disabled = true;
       try {
-        if (isNew) await api('addBooking', data); else await api('updateBooking', { id: bk.id, ...data });
-        closeModal(); toast(t('saved'));
-        if (S.page === 'schedule') { S.day = data.day; if ($('#dayIn')) $('#dayIn').value = S.day; await reloadDay(); }
-        else if (S.page === 'patients' && S.openPatient) openPatient(S.openPatient);
-      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'slot_taken') loadTimes(); }
+        const r = await api('addBooking', { name: f.name.value, phone: f.phone.value, branch: f.branch.value, day: f.day.value, time: f.time.value,
+          izoh: f.izoh.value, channel: f.channel ? f.channel.value : '' });
+        closeModal(); toast(r.linked ? t('linked') : t('saved'));
+        S.day = f.day.value; if ($('#dayIn')) $('#dayIn').value = S.day;
+        await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'slot_taken') load(); }
     };
   });
 }
 
-/* ======================================================== пациенты */
-async function pagePatients() {
-  $('#main').innerHTML = head(t('nav.patients')) + `
-    <div style="margin-bottom:14px"><input class="input" id="pq" placeholder="${t('search')}" style="max-width:420px"></div>
-    <div class="card" id="plist"><div class="spin"></div></div>`;
-  let timer;
-  $('#pq').oninput = e => { clearTimeout(timer); timer = setTimeout(() => loadPatients(e.target.value), 300); };
-  loadPatients('');
-}
-async function loadPatients(q) {
-  try {
-    const r = await api('patients', { q });
-    const box = $('#plist'); if (!box) return;
-    box.innerHTML = r.patients.length ? `<div class="scroll-x"><table class="table">
-      <thead><tr><th>${t('name')}</th><th>${t('phone')}</th><th class="hide-m">${t('tg')}</th><th>${t('visits')}</th><th class="hide-m">${t('lastVisit')}</th></tr></thead>
-      <tbody>${r.patients.map(p => `<tr class="click" data-id="${esc(p.id)}">
-        <td><b>${esc(p.name)}</b></td><td>${fmtPhone(p.phone)}</td>
-        <td class="hide-m">${p.tg ? '<span class="badge bot">Telegram</span>' : '<span class="muted">—</span>'}</td>
-        <td>${p.total}${p.came ? ` <span class="badge ok">${p.came}</span>` : ''}${p.noshow ? ` <span class="badge no">${p.noshow}</span>` : ''}</td>
-        <td class="hide-m">${p.last ? dm(p.last.slice(0, 10)) + '.' + p.last.slice(0, 4) + ' ' + p.last.slice(11) : '—'}</td></tr>`).join('')}</tbody></table></div>`
-      : `<div class="empty">—</div>`;
-    box.querySelectorAll('tr[data-id]').forEach(tr => tr.onclick = () => openPatient(tr.dataset.id));
-  } catch (e) { toast(errMsg(e), true); }
-}
-async function openPatient(id) {
-  S.openPatient = id;
-  const p = panel('<div class="spin"></div>');
-  try {
-    const r = await api('patient', { id });
-    const pt = r.patient;
-    p.innerHTML = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><h2 style="margin:0;flex:1;font-size:20px;font-weight:800">${esc(pt.name)}</h2>
-        <button class="ib" onclick="closePanel()">${IC.x}</button></div>
-      <form id="pf" class="stack">
-        <label class="f"><span>${t('name')}</span><input class="input" name="name" value="${esc(pt.name)}"></label>
-        <label class="f"><span>${t('phone')}</span><input class="input" name="phone" value="${fmtPhone(pt.phone)}"></label>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">${pt.tg ? '<span class="badge bot">Telegram</span>' : ''}
-          <a class="btn sm" href="tel:+998${esc(pt.phone)}">${IC.phone} ${fmtPhone(pt.phone)}</a>
-          <span style="flex:1"></span>
-          <button type="button" class="btn sm" id="pBook">${IC.plus} ${t('bookFor')}</button>
-          <button class="btn sm primary">${t('save')}</button></div>
-      </form>
-      <h3 style="margin-top:24px">${t('history')}</h3>
-      <div class="card">${r.bookings.length ? r.bookings.map(k => `<div class="slot ${k.status}" style="grid-template-columns:1fr auto">
-        <div><div class="nm">${fmtDay(k.day)}, ${k.time}</div><div class="ph">${esc(k.branch)}${k.note ? ' · ' + esc(k.note) : ''}</div></div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end"><span class="badge ${k.source === 'bot' ? 'bot' : ''}">${t('src.' + k.source)}</span>
-          <span class="badge ${k.status === 'came' ? 'ok' : k.status === 'noshow' || k.status === 'cancelled' ? 'no' : ''}">${t('st.' + k.status)}</span></div></div>`).join('') : '<div class="empty">—</div>'}</div>`;
-    $('#pf').onsubmit = async e => {
+function editModal(r) {
+  modal(`<h2>${t('editBooking')} · ${r.time}</h2>
+    <form id="ef" class="stack">
+      <label class="f"><span>${t('name')}</span><input class="input" name="name" required minlength="2" value="${esc(r.name)}"></label>
+      <label class="f"><span>${t('phone')}</span><input class="input" name="phone" value="${r.phone ? fmtPhone(r.phone) : ''}"></label>
+      ${S.kanal.length ? `<label class="f"><span>${t('kanal')}</span><select class="input" name="channel">${kanalOptions(r.channel)}</select></label>` : ''}
+      <label class="f"><span>${t('izoh')}</span><input class="input" name="izoh" maxlength="300" value="${esc(r.izoh)}"></label>
+      <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('save')}</button></div>
+    </form>`, o => {
+    const f = o.querySelector('#ef');
+    f.onsubmit = async e => {
       e.preventDefault();
-      try { await api('updatePatient', { id, name: e.target.name.value, phone: e.target.phone.value }); toast(t('saved')); loadPatients($('#pq') ? $('#pq').value : ''); }
-      catch (er) { toast(errMsg(er), true); }
+      const btn = f.querySelector('.btn.primary'); btn.disabled = true;
+      try {
+        await api('updateRow', { row: r.row, day: S.day, oldName: r.name, name: f.name.value, phone: f.phone.value, izoh: f.izoh.value,
+          channel: f.channel ? f.channel.value : undefined });
+        closeModal(); toast(t('saved')); await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'row_changed') { closeModal(); reloadDay(); } }
     };
-    $('#pBook').onclick = () => bookingModal({ name: pt.name, phone: pt.phone, day: S.today, branch: S.settings.branchOrder.find(b => (S.settings.branches[b].days || []).includes(wd(S.today))) || S.settings.branchOrder[0] });
-  } catch (e) { p.innerHTML = `<div class="empty">${esc(errMsg(e))}</div>`; }
+  });
+}
+
+function moveModal(r) {
+  modal(`<h2>${t('moveBooking')}</h2>
+    <p class="muted" style="margin:-8px 0 14px;font-weight:600">${esc(r.name)} · ${dm(S.day)} ${r.time} · ${esc(r.branch)}</p>
+    <form id="mf" class="stack">
+      <div class="grid2">
+        <label class="f"><span>${t('branch')}</span><select class="input" name="branch">${S.branchOrder.map(b => `<option ${b === r.branch ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>
+        <label class="f"><span>${t('date')}</span><input class="input" type="date" name="day" required value="${S.day}"></label>
+      </div>
+      <label class="f"><span>${t('time')}</span><select class="input" name="time"></select></label>
+      ${r.bot ? `<label class="check"><input type="checkbox" name="notify" checked> ${t('notify')}</label>` : ''}
+      <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('move')}</button></div>
+    </form>`, o => {
+    const f = o.querySelector('#mf');
+    const load = () => timesSelect(f.time, f.branch.value, f.day.value);
+    f.branch.onchange = load; f.day.onchange = load; load();
+    f.onsubmit = async e => {
+      e.preventDefault();
+      if (!f.time.value) return toast(t('noFree'), true);
+      const btn = f.querySelector('.btn.primary'); btn.disabled = true;
+      try {
+        await api('moveBooking', { row: r.row, fromDay: S.day, name: r.name, branch: f.branch.value, day: f.day.value, time: f.time.value,
+          notify: f.notify ? f.notify.checked : false });
+        closeModal(); toast(t('done'));
+        S.day = f.day.value; if ($('#dayIn')) $('#dayIn').value = S.day;
+        await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'slot_taken') load(); if (er.message === 'row_changed') { closeModal(); reloadDay(); } }
+    };
+  });
+}
+
+/* ======================================================== рассылка */
+async function pageBroadcast() {
+  $('#main').innerHTML = head(t('nav.broadcast')) + `<div class="grid2" style="align-items:start">
+    <form class="card pad stack" id="bcf">
+      <h3 style="margin:0">${t('bcTitle')}</h3>
+      <div class="muted" style="font-size:13px;font-weight:600">${t('bcHint')}</div>
+      <label class="f"><span>${t('bcUz')}</span><textarea class="input" name="uz" maxlength="3500"></textarea></label>
+      <label class="f"><span>${t('bcRu')}</span><textarea class="input" name="ru" maxlength="3500"></textarea></label>
+      <label class="f"><span>${t('bcWho')}</span><select class="input" name="branch" id="bcWho"><option value="all">${t('bcAll')}</option>${S.branchOrder.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('')}</select></label>
+      <label class="check"><input type="checkbox" name="btn" checked> ${t('bcBtn')}</label>
+      <button class="btn primary" style="min-height:46px">${IC.send} ${t('bcSend')}</button>
+      <div id="bcRes"></div>
+    </form>
+    <div class="card pad"><h3>${t('bcPreview')}</h3><div id="bcPrev"></div></div></div>`;
+  let counts = {};
+  const f = $('#bcf');
+  const upd = () => {
+    const txt = (S.lang === 'ru' ? (f.ru.value || f.uz.value) : (f.uz.value || f.ru.value)) || '…';
+    $('#bcPrev').innerHTML = `<div class="bubble">${esc(txt)}${f.btn.checked ? `<div class="bbtn">📅 ${S.lang === 'ru' ? 'Записаться' : 'Yozilish'}</div>` : ''}</div>
+      <div class="muted" style="margin-top:12px;font-weight:700">${counts[f.branch.value] ?? '…'} ${t('people')}</div>`;
+  };
+  f.oninput = upd; f.onchange = upd; upd();
+  try { counts = (await api('audience')).counts; upd(); } catch (e) { toast(errMsg(e), true); }
+  f.onsubmit = async e => {
+    e.preventDefault();
+    if (!f.uz.value.trim() && !f.ru.value.trim()) return;
+    const n = counts[f.branch.value] ?? '?';
+    if (!confirm(t('bcAsk')(n))) return;
+    const btn = f.querySelector('.btn.primary'); btn.disabled = true; btn.innerHTML = '<div class="spin" style="width:20px;height:20px;margin:0;border-width:2.5px"></div>';
+    try {
+      const r = await api('broadcast', { textUz: f.uz.value, textRu: f.ru.value, branch: f.branch.value, withButton: f.btn.checked });
+      $('#bcRes').innerHTML = `<div class="badge ok" style="display:block;padding:10px 12px;border-radius:10px">${t('bcDone')(r.sent, r.total)}${r.blocked ? ` · ${t('blocked')}: ${r.blocked}` : ''}</div>`;
+      f.uz.value = ''; f.ru.value = ''; upd();
+    } catch (er) { toast(errMsg(er), true); }
+    btn.disabled = false; btn.innerHTML = `${IC.send} ${t('bcSend')}`;
+  };
 }
 
 /* ======================================================== статистика */
@@ -688,74 +690,81 @@ async function pageStats() {
   $('#csv').onclick = () => exportCsv(from, to);
   try {
     const r = await api('stats', { from, to });
-    const v = r.visits, rate = v.came + v.noshow ? Math.round(100 * v.came / (v.came + v.noshow)) + '%' : '—';
+    const rate = r.came ? Math.round(100 * r.came / (r.came + r.noshow + r.unmarked)) + '%' : '—';
     const days = []; for (let d = from; d <= to; d = addDays(d, 1)) days.push(d);
     const max = Math.max(1, ...days.map(d => (r.byDay[d] || {}).total || 0));
     $('#sbox').innerHTML = `
-      <div class="kpis">
-        ${[['total', v.total], ['came', v.came], ['noshow', v.noshow], ['pending', v.pending], ['cancelled', v.cancelled], ['rate', rate], ['confirmed', v.confirmed]]
-          .map(([k, n]) => `<div class="card kpi"><small>${t('k.' + k)}</small><b>${n}</b></div>`).join('')}
-      </div>
-      <div class="grid2" style="margin-bottom:16px">
-        <div class="card pad"><h3>${t('sources')}</h3>
-          ${[['bot', r.created.bot], ['admin', r.created.admin], ['sheet', r.created.imported]].map(([k, n]) => `<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line)"><span class="badge ${k === 'bot' ? 'bot' : ''}">${t('src.' + k)}</span><b>${n}</b></div>`).join('')}
-        </div>
-        <div class="card pad"><h3>${t('byBranch')}</h3>
-          ${Object.entries(r.branches).map(([b, x]) => `<div style="display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)"><b>${esc(b)}</b><span>${x.total} · <span class="badge ok">${x.came}</span> <span class="badge no">${x.noshow}</span></span></div>`).join('')}
-        </div>
+      <div class="kpis">${[['total', r.total], ['came', r.came], ['noshow', r.noshow], ['unmarked', r.unmarked], ['upcoming', r.upcoming], ['rate', rate], ['free', r.free]]
+        .map(([k, n]) => `<div class="card kpi"><small>${t('k.' + k)}</small><b>${n}</b></div>`).join('')}</div>
+      <div class="grid3" style="margin-bottom:16px">
+        <div class="card pad"><h3>${t('botStats')}</h3>${Object.entries(r.bot).filter(([k]) => k !== 'fromBotRows').map(([k, n]) => `<div class="kv"><span>${t('botK.' + k)}</span><b>${n}</b></div>`).join('')}</div>
+        <div class="card pad"><h3>${t('byKanal')}</h3>${Object.entries(r.kanal).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<div class="kv"><span>${esc(k)}</span><b>${n}</b></div>`).join('') || '—'}</div>
+        <div class="card pad"><h3>${t('byBranch')}</h3>${Object.entries(r.branches).map(([b, x]) => `<div class="kv"><b>${esc(b)}</b><span>${x.total} · <span class="badge ok">${x.came}</span> <span class="badge no">${x.noshow}</span></span></div>`).join('')}</div>
       </div>
       <div class="card"><div class="pad" style="padding-bottom:0"><h3>${t('byDay')}</h3></div>
-        <div class="bars">${days.map(d => { const x = r.byDay[d] || { total: 0, came: 0, noshow: 0 }; const h = 100 * x.total / max; const p = x.total - x.came - x.noshow;
-          return `<div class="bar" style="height:${Math.max(h, 2)}%" title="${dm(d)}: ${x.total}">${x.total ? `<i class="c" style="height:${100 * x.came / x.total}%"></i><i class="n" style="height:${100 * x.noshow / x.total}%"></i><i class="p" style="height:${100 * p / x.total}%"></i>` : ''}</div>`; }).join('')}</div>
+        <div class="bars">${days.map(d => { const x = r.byDay[d] || { total: 0, came: 0, noshow: 0 }; const p = x.total - x.came - x.noshow;
+          return `<div class="bar" style="height:${Math.max(100 * x.total / max, 2)}%" title="${dm(d)}: ${x.total}">${x.total ? `<i class="c" style="height:${100 * x.came / x.total}%"></i><i class="n" style="height:${100 * x.noshow / x.total}%"></i><i class="p" style="height:${100 * p / x.total}%"></i>` : ''}</div>`; }).join('')}</div>
         <div class="bar-l">${days.map((d, i) => `<span>${days.length <= 14 || i % Math.ceil(days.length / 10) === 0 ? +d.slice(8) : ''}</span>`).join('')}</div>
-        <div class="legend"><span><i style="background:var(--ok)"></i>${t('k.came')}</span><span><i style="background:var(--danger)"></i>${t('k.noshow')}</span><span><i style="background:var(--brand)"></i>${t('k.pending')}</span></div>
+        <div class="legend"><span><i style="background:var(--ok)"></i>${t('k.came')}</span><span><i style="background:var(--danger)"></i>${t('k.noshow')}</span><span><i style="background:var(--brand)"></i>${t('k.upcoming')} / ${t('k.unmarked')}</span></div>
       </div>`;
   } catch (e) { $('#sbox').innerHTML = `<div class="card empty">${esc(errMsg(e))}</div>`; }
 }
 async function exportCsv(from, to) {
   try {
-    const r = await api('bookings', { from, to });
-    const head = [t('date'), t('time'), t('branch'), t('name'), t('phone'), 'Status', 'Manba', t('kelaman'), t('note'), 'Yaratilgan', 'Kim'];
+    const r = await api('rows', { from, to });
+    const headRow = [t('date'), t('time'), t('branch'), t('name'), t('phone'), 'Keldi', 'Kanal', 'Status', t('izoh'), 'Operator', 'Gaplashilgan sana', 'Bot'];
     const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
-    const rows = r.bookings.map(b => [dm(b.day) + '.' + b.day.slice(0, 4), b.time, b.branch, b.name, '+998' + b.phone, t('st.' + b.status), t('src.' + b.source), b.confirmed ? '✓' : '', b.note, b.created, b.createdBy]);
-    const csv = '﻿' + [head, ...rows].map(r => r.map(q).join(';')).join('\r\n');
+    const rows = r.rows.map(b => [dm(b.day) + '.' + b.day.slice(0, 4), b.time, b.branch, b.name, b.phone ? '+998' + b.phone : '', b.keldi ? '✓' : '', b.channel, b.status, b.izoh, b.operator, b.bookedOn, b.bot ? '✓' : '']);
+    const csv = '﻿' + [headRow, ...rows].map(x => x.map(q).join(';')).join('\r\n');
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
     a.download = `breket_${from}_${to}.csv`; a.click();
   } catch (e) { toast(errMsg(e), true); }
 }
 
+/* ======================================================== пациенты бота */
+async function pageUsers() {
+  $('#main').innerHTML = head(t('nav.users')) + `
+    <div style="margin-bottom:14px"><input class="input" id="uq" placeholder="${t('search')}" style="max-width:420px"></div>
+    <div class="card" id="ulist"><div class="spin"></div></div>`;
+  let timer;
+  $('#uq').oninput = e => { clearTimeout(timer); timer = setTimeout(() => loadUsers(e.target.value), 300); };
+  loadUsers('');
+}
+async function loadUsers(q) {
+  try {
+    const r = await api('users', { q });
+    const box = $('#ulist'); if (!box) return;
+    box.innerHTML = r.users.length ? `<div class="scroll-x"><table class="table">
+      <thead><tr><th>${t('name')}</th><th>${t('phone')}</th><th class="hide-m">${t('lang')}</th><th class="hide-m">${t('branch')}</th><th>${t('activeB')}</th></tr></thead>
+      <tbody>${r.users.map(u => `<tr><td><b>${esc(u.name)}</b>${u.blocked ? ` <span class="badge no">${t('blocked')}</span>` : ''}</td><td>${fmtPhone(u.phone)}</td>
+        <td class="hide-m">${u.lang.toUpperCase()}</td><td class="hide-m">${esc(u.branch) || '—'}</td>
+        <td>${u.active ? `<span class="badge bot">${dm(u.active.day)} ${u.active.time} · ${esc(u.active.branch)}</span>` : '<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+      <div class="muted" style="padding:10px 14px;font-weight:700">${t('total')}: ${r.total}</div>`
+      : '<div class="empty">—</div>';
+  } catch (e) { toast(errMsg(e), true); }
+}
+
 /* ======================================================== настройки */
 function pageSettings() {
   const s = S.settings;
-  const dayOrder = [1, 2, 3, 4, 5, 6, 0];
+  const kanalSel = `<select class="input" name="channel"><option value="" ${!s.channel ? 'selected' : ''}>${t('empty')}</option>
+    ${S.kanal.map(k => `<option ${k === s.channel ? 'selected' : ''}>${esc(k)}</option>`).join('')}
+    ${s.channel && !S.kanal.includes(s.channel) ? `<option selected>${esc(s.channel)}</option>` : ''}</select>`;
   $('#main').innerHTML = head(t('nav.settings')) + `<form id="sform">
-    ${s.branchOrder.map(b => { const x = s.branches[b]; return `<div class="card pad sect" data-branch="${esc(b)}"><h3>${esc(b)}</h3><div class="stack">
-      <div class="f"><span class="muted" style="font-size:12.5px;font-weight:700">${t('workDays')}</span><div class="days-pick" style="margin-top:6px">
-        ${dayOrder.map(d => `<label><input type="checkbox" name="d" value="${d}" ${x.days.includes(d) ? 'checked' : ''}>${t('days')[d]}</label>`).join('')}</div></div>
-      <div class="grid2">
-        <label class="f"><span>${t('hours')}</span><div style="display:flex;gap:6px;align-items:center"><input class="input" type="time" name="from" value="${x.from}"> – <input class="input" type="time" name="to" value="${x.to}"></div></label>
-        <label class="f"><span>${t('lunch')}</span><div style="display:flex;gap:6px;align-items:center"><input class="input" type="time" name="lunchFrom" value="${x.lunchFrom || ''}"> – <input class="input" type="time" name="lunchTo" value="${x.lunchTo || ''}"></div></label>
-      </div>
+    <h3 style="margin:0 0 12px">${t('addresses')}</h3>
+    ${S.branchOrder.map(b => { const x = s.branches[b] || {}; return `<div class="card pad sect" data-branch="${esc(b)}"><h3>${esc(b)}</h3>
       <div class="grid2">
         <label class="f"><span>${t('addrUz')}</span><input class="input" name="address_uz" value="${esc(x.address_uz)}"></label>
         <label class="f"><span>${t('addrRu')}</span><input class="input" name="address_ru" value="${esc(x.address_ru)}"></label>
         <label class="f"><span>${t('lmUz')}</span><input class="input" name="landmark_uz" value="${esc(x.landmark_uz)}"></label>
         <label class="f"><span>${t('lmRu')}</span><input class="input" name="landmark_ru" value="${esc(x.landmark_ru)}"></label>
       </div>
-      <label class="f"><span>${t('map')}</span><input class="input" name="map" value="${esc(x.map)}" placeholder="https://maps.app.goo.gl/..."></label>
-    </div></div>`; }).join('')}
-    <div class="card pad sect"><h3>${t('general')}</h3>
-      <div class="grid3">
-        <label class="f"><span>${t('step')}</span><select class="input" name="step">${[15, 20, 30, 40, 45, 60].map(n => `<option ${+s.step === n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
-        <label class="f"><span>${t('capacity')}</span><input class="input" type="number" min="1" max="10" name="capacity" value="${s.capacity}"></label>
-        <label class="f"><span>${t('horizon')}</span><input class="input" type="number" min="1" max="120" name="horizonDays" value="${s.horizonDays}"></label>
-        <label class="f"><span>${t('minHours')}</span><input class="input" type="number" min="0" max="48" name="minHours" value="${s.minHours}"></label>
-        <label class="f"><span>${t('r1')}</span><input class="input" type="time" name="r1" value="${s.r1}"></label>
-        <label class="f"><span>${t('r2')}</span><input class="input" type="time" name="r2" value="${s.r2}"></label>
-      </div>
-      <label class="f" style="margin-top:12px"><span>${t('adminUser')}</span><input class="input" name="adminUsername" value="${esc(s.adminUsername)}" placeholder="breket_admin"></label>
-    </div>
+      <label class="f" style="margin-top:12px"><span>${t('map')}</span><input class="input" name="map" value="${esc(x.map)}" placeholder="https://maps.app.goo.gl/..."></label>
+    </div>`; }).join('')}
+    <div class="card pad sect"><h3>${t('general')}</h3><div class="grid2">
+      <label class="f"><span>${t('adminUser')}</span><input class="input" name="adminUsername" value="${esc(s.adminUsername)}" placeholder="breket_admin"></label>
+      <label class="f"><span>${t('botKanal')}</span>${kanalSel}</label></div></div>
     <div style="margin-top:16px;display:flex;justify-content:flex-end"><button class="btn primary" style="min-height:44px;padding:0 26px">${t('save')}</button></div>
   </form>`;
   $('#sform').onsubmit = async e => {
@@ -763,13 +772,9 @@ function pageSettings() {
     const f = e.target, out = { branches: {} };
     f.querySelectorAll('[data-branch]').forEach(card => {
       const g = n => card.querySelector(`[name="${n}"]`).value;
-      out.branches[card.dataset.branch] = {
-        days: [...card.querySelectorAll('input[name=d]:checked')].map(x => +x.value),
-        from: g('from'), to: g('to'), lunchFrom: g('lunchFrom'), lunchTo: g('lunchTo'),
-        address_uz: g('address_uz'), address_ru: g('address_ru'), landmark_uz: g('landmark_uz'), landmark_ru: g('landmark_ru'), map: g('map')
-      };
+      out.branches[card.dataset.branch] = { address_uz: g('address_uz'), address_ru: g('address_ru'), landmark_uz: g('landmark_uz'), landmark_ru: g('landmark_ru'), map: g('map') };
     });
-    ['step', 'capacity', 'horizonDays', 'minHours', 'r1', 'r2', 'adminUsername'].forEach(k => { out[k] = f.querySelector(`[name="${k}"]`).value; });
+    out.adminUsername = f.adminUsername.value; out.channel = f.channel.value;
     try { S.settings = (await api('saveSettings', { settings: out })).settings; toast(t('saved')); pageSettings(); }
     catch (er) { toast(errMsg(er), true); }
   };
@@ -793,28 +798,22 @@ async function pageAdmins() {
         <button class="btn primary">${t('save')}</button></div></form>
     </div></div>
     <h3 style="margin:24px 0 12px">${t('log')}</h3><div class="card" id="logBox"><div class="spin"></div></div>`;
-  const loadList = async () => {
+  const load = async () => {
     const r = await api('admins');
     $('#alist').innerHTML = `<table class="table"><thead><tr><th>${t('name')}</th><th>${t('login')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>
       ${r.admins.map(a => `<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.login)}</td><td><span class="badge ${a.role === 'owner' ? 'bot' : ''}">${a.role === 'owner' ? t('owner') : t('adminRole')}</span></td>
         <td style="text-align:right">${owner && a.login !== S.admin.login ? `<button class="ib no" title="${t('remove')}" data-rm="${esc(a.login)}">${IC.trash}</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
     $('#alist').querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
       if (!confirm(t('remove') + ': ' + b.dataset.rm + '?')) return;
-      try { await api('removeAdmin', { login: b.dataset.rm }); toast(t('done')); loadList(); } catch (e) { toast(errMsg(e), true); }
+      try { await api('removeAdmin', { login: b.dataset.rm }); toast(t('done')); load(); } catch (e) { toast(errMsg(e), true); }
     });
+    $('#logBox').innerHTML = r.log.length ? `<div class="scroll-x"><table class="table"><tbody>${r.log.map(x =>
+      `<tr><td class="muted" style="white-space:nowrap">${esc(x.ts)}</td><td><b>${esc(x.who)}</b></td><td>${esc(x.text)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">—</div>';
   };
-  const loadLog = async () => {
-    const r = await api('log');
-    const nameOf = { add: '+', move: '↔', edit: '✎', status: '●', delete: '🗑', block: '🔒', unblock: '🔓', login: '→', settings: '⚙', addAdmin: '+👤', removeAdmin: '−👤', password: '🔑', patient: '👤' };
-    $('#logBox').innerHTML = r.log.length ? `<div class="scroll-x"><table class="table"><tbody>${r.log.map(x => {
-      let d = x.details; try { const o = JSON.parse(d); d = [o.name, o.at || o.from, o.to, o.branch].filter(Boolean).join(' · '); if (o.from && o.to && o.at) d = `${o.name} · ${o.at} · ${o.from} → ${o.to}`; } catch (e) {}
-      return `<tr><td class="muted" style="white-space:nowrap">${esc(x.ts)}</td><td><b>${esc(x.who)}</b></td><td>${nameOf[x.action] || ''} ${esc(x.action)}</td><td>${esc(d)}</td></tr>`;
-    }).join('')}</tbody></table></div>` : '<div class="empty">—</div>';
-  };
-  try { await Promise.all([loadList(), loadLog()]); } catch (e) { toast(errMsg(e), true); }
+  try { await load(); } catch (e) { toast(errMsg(e), true); }
   if (owner) $('#addA').onsubmit = async e => {
     e.preventDefault(); const f = e.target;
-    try { await api('addAdmin', { name: f.name.value, login: f.login.value, password: f.password.value, role: f.role.value }); f.reset(); toast(t('done')); loadList(); }
+    try { await api('addAdmin', { name: f.name.value, login: f.login.value, password: f.password.value, role: f.role.value }); f.reset(); toast(t('done')); load(); }
     catch (er) { toast(errMsg(er), true); }
   };
   $('#pwF').onsubmit = async e => {
@@ -829,7 +828,7 @@ async function boot() {
   if (!S.token) return renderLogin(API_URL ? '' : L[S.lang].errors.not_configured);
   try {
     const r = await api('me');
-    S.admin = r.admin; S.settings = r.settings; S.today = r.today;
+    S.admin = r.admin; S.today = r.today; S.branchOrder = r.branchOrder; S.settings = r.settings; S.kanal = r.kanal || [];
     const h = location.hash.slice(1);
     if (PAGES.includes(h)) S.page = h;
     renderShell();
