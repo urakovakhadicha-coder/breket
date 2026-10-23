@@ -213,7 +213,8 @@ const T = {
   uz: {
     clinic: 'Breket Center', doctor: 'Dr. Shahboz klinikasi',
     book: 'Aktivatsiyaga yozilish', bookSub: 'Onlayn, 1 daqiqada',
-    myBooking: 'Sizning yozuvingiz', addresses: 'Manzillarimiz', admin: "Admin bilan bog'lanish", adminSub: 'Savollar bo\'lsa yozing',
+    myBooking: 'Sizning yozuvingiz', myBookings: 'Sizning yozuvlaringiz',
+    bookMore: 'Yana yozilish', bookMoreSub: "Masalan, oila a'zosini yozish", addresses: 'Manzillarimiz', admin: "Admin bilan bog'lanish", adminSub: 'Savollar bo\'lsa yozing',
     map: 'Xaritada ochish', branch: 'Filial', date: 'Sana', time: 'Vaqt', name: 'Ism', phone: 'Telefon', address: 'Manzil',
     chooseBranch: 'Filialni tanlang', chooseBranchSub: 'Qaysi filialga kelasiz?',
     chooseDate: 'Sanani tanlang', chooseTime: 'Vaqtni tanlang',
@@ -233,7 +234,7 @@ const T = {
     tooLate: "Tashrif kuni bekor qilish yoki ko'chirish faqat admin orqali.",
     thanks: 'Rahmat! Sizni kutamiz', slotTaken: 'Bu vaqt hozirgina band qilindi, boshqasini tanlang.',
     changed: "Yozuvingiz o'zgartirilgan, admin bilan bog'laning.", error: "Xatolik yuz berdi. Birozdan keyin urinib ko'ring.",
-    limit: 'Sizda allaqachon faol yozuv bor.', demo: 'Demo rejim — jadvalga yozilmaydi', filial: 'filiali',
+    limit: "Faol yozuvlar soni chegarasiga yetdingiz.", demo: 'Demo rejim — jadvalga yozilmaydi', filial: 'filiali',
     days: ['Ya', 'Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha'],
     daysFull: ['yakshanba', 'dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba'],
     months: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'],
@@ -243,7 +244,8 @@ const T = {
   ru: {
     clinic: 'Breket Center', doctor: 'Клиника Dr. Shahboz',
     book: 'Записаться на активацию', bookSub: 'Онлайн, за 1 минуту',
-    myBooking: 'Ваша запись', addresses: 'Наши адреса', admin: 'Связаться с админом', adminSub: 'Если есть вопросы',
+    myBooking: 'Ваша запись', myBookings: 'Ваши записи',
+    bookMore: 'Записаться ещё раз', bookMoreSub: 'Например, записать члена семьи', addresses: 'Наши адреса', admin: 'Связаться с админом', adminSub: 'Если есть вопросы',
     map: 'Открыть на карте', branch: 'Филиал', date: 'Дата', time: 'Время', name: 'Имя', phone: 'Телефон', address: 'Адрес',
     chooseBranch: 'Выберите филиал', chooseBranchSub: 'В какой филиал придёте?',
     chooseDate: 'Выберите дату', chooseTime: 'Выберите время',
@@ -263,7 +265,7 @@ const T = {
     tooLate: 'В день визита отменить или перенести запись можно только через администратора.',
     thanks: 'Спасибо! Ждём вас', slotTaken: 'Это время только что заняли, выберите другое.',
     changed: 'Ваша запись была изменена, свяжитесь с администратором.', error: 'Произошла ошибка. Попробуйте чуть позже.',
-    limit: 'У вас уже есть активная запись.', demo: 'Демо-режим — в таблицу не пишет', filial: '',
+    limit: 'Достигнут лимит активных записей.', demo: 'Демо-режим — в таблицу не пишет', filial: '',
     days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
     daysFull: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
     months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
@@ -363,8 +365,9 @@ async function demoApi(action, d) {
     const list = demo.slots[d.branch][d.day] || [];
     if (!list.includes(d.time)) throw new Error('slot_taken');
     demo.slots[d.branch][d.day] = list.filter(x => x !== d.time);
+    const prev = d.moveFrom && demo.bookings.find(b => b.id === d.moveFrom);
     if (d.moveFrom) { const o = demo.bookings.find(b => b.id === d.moveFrom); o.status = 'moved'; (demo.slots[o.branch][o.day] = demo.slots[o.branch][o.day] || []).push(o.time); demo.slots[o.branch][o.day].sort(); }
-    const b = { id: 'd' + Date.now(), day: d.day, time: d.time, branch: d.branch, confirmed: false, status: 'active' };
+    const b = { id: 'd' + Date.now(), day: d.day, time: d.time, branch: d.branch, name: prev ? prev.name : demo.user && demo.user.name, confirmed: false, status: 'active' };
     demo.bookings.push(b);
     return { booking: pub(b), slots: demo.slots };
   }
@@ -427,6 +430,7 @@ function bookingCard(b) {
       <button class="badge" data-act="map" data-branch="${b.branch}">📍 ${esc(b.branch)}</button></div>
     <div class="bk-date">${fmtLong(b.day)}</div>
     <div class="bk-time"><b>${b.time}</b> · ${esc(branchName(b.branch))}</div>
+    ${b.name && S.bookings.length > 1 ? `<div class="bk-time">👤 ${esc(b.name)}</div>` : ''}
     ${addr(b.branch) ? `<div class="note" style="margin-top:6px">${esc(addr(b.branch))}</div>` : ''}
     ${actions}
   </div>`;
@@ -438,11 +442,12 @@ function weekdays(b) {
 
 const SCREENS = {
   home() {
-    const active = S.bookings[0];
+    const n = S.bookings.length, max = (S.config && S.config.maxActive) || 3;
+    const cta = (title, sub) => `<button class="cta" data-act="book"><div class="ic">${I.cal}</div><div><b>${title}</b><span>${sub}</span></div><div class="arrow">${I.arrow}</div></button>`;
     return `
       <div class="hero"><div class="logo"></div><div><h1>${t('clinic')}</h1><p>${t('doctor')}</p></div></div>
-      ${active ? `<div class="label">${t('myBooking')}</div>${bookingCard(active)}`
-        : `<button class="cta" data-act="book"><div class="ic">${I.cal}</div><div><b>${t('book')}</b><span>${t('bookSub')}</span></div><div class="arrow">${I.arrow}</div></button>`}
+      ${n ? `<div class="label">${t(n > 1 ? 'myBookings' : 'myBooking')}</div><div class="stack">${S.bookings.map(bookingCard).join('')}</div>` : ''}
+      ${!n ? cta(t('book'), t('bookSub')) : n < max ? `<div style="margin-top:14px">${cta(t('bookMore'), t('bookMoreSub'))}</div>` : ''}
       <div class="label">${t('addresses')}</div>
       <div class="card list">
         ${S.config.branchOrder.map(b => `
@@ -596,7 +601,9 @@ async function doBook() {
     await askWriteAccess();
     const moved = !!S.moveFrom;
     const r = await api('book', { branch: S.branch, day: S.day, time: S.time, moveFrom: S.moveFrom || undefined });
-    S.slots = r.slots; S.bookings = [r.booking]; S.moveFrom = null; S.user.lastBranch = S.branch;
+    const oldId = S.moveFrom;
+    S.bookings = S.bookings.filter(b => b.id !== oldId).concat(r.booking).sort((a, c) => (a.day + a.time < c.day + c.time ? -1 : 1));
+    S.slots = r.slots; S.moveFrom = null; S.user.lastBranch = S.branch;
     S.result = { ...r.booking, moved };
     haptic('success');
     S.busy = false; go('done');
