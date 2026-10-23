@@ -222,6 +222,7 @@ const T = {
     yourData: "Ma'lumotlaringiz", yourDataSub: 'Bir marta kiritiladi',
     fullName: 'Ism va familiya', namePh: 'Masalan: Aziza Karimova', sharePhone: 'Raqamni yuborish',
     shareHint: 'Raqam Telegram orqali yuboriladi', next: 'Davom etish',
+    editData: "Ism yoki raqamni o'zgartirish",
     or: 'yoki', typePhone: "Raqamni qo'lda kiritish", useShare: 'Telegram orqali yuborish', changePhone: "O'zgartirish",
     manualHint: 'Siz bilan bog‘lanadigan raqam, masalan: 90 123 45 67',
     confirmTitle: 'Tasdiqlang', confirmSub: "Ma'lumotlarni tekshiring", confirm: 'Tasdiqlash', confirmMove: "Ko'chirishni tasdiqlash",
@@ -251,6 +252,7 @@ const T = {
     yourData: 'Ваши данные', yourDataSub: 'Вводятся один раз',
     fullName: 'Имя и фамилия', namePh: 'Например: Азиза Каримова', sharePhone: 'Отправить номер',
     shareHint: 'Номер передаётся через Telegram', next: 'Продолжить',
+    editData: 'Изменить имя или номер',
     or: 'или', typePhone: 'Ввести номер вручную', useShare: 'Отправить через Telegram', changePhone: 'Изменить',
     manualHint: 'Номер для связи с вами, например: 90 123 45 67',
     confirmTitle: 'Подтвердите', confirmSub: 'Проверьте данные', confirm: 'Подтвердить запись', confirmMove: 'Подтвердить перенос',
@@ -381,7 +383,7 @@ function go(screen) {
 function back() {
   haptic('sel');
   let p = PARENT[S.screen] || 'home';
-  if (S.screen === 'confirm' && !S.user) p = 'register';
+  if (S.screen === 'confirm' && (!S.user || S.editing)) p = 'register';
   if (p === 'home') S.moveFrom = null;
   go(p);
 }
@@ -510,7 +512,7 @@ const SCREENS = {
 
   confirm() {
     const old = S.moveFrom && S.bookings.find(b => b.id === S.moveFrom);
-    const u = S.user || { name: S.regName, phone: S.regPhone };
+    const u = S.user && !S.editing ? S.user : { name: S.regName, phone: S.regPhone };
     const line = (k, v, s) => `<div class="line"><div class="k">${k}</div><div class="v">${v}${s ? `<small>${s}</small>` : ''}</div></div>`;
     return `${steps(4)}<h2>${t('confirmTitle')}</h2><p class="sub">${t('confirmSub')}</p>
       <div class="card sum">
@@ -519,7 +521,8 @@ const SCREENS = {
         ${line(t('date'), fmtLong(S.day))}
         ${line(t('time'), S.time)}
         ${line(t('name'), esc(u.name), fmtPhone(u.phone))}
-      </div>`;
+      </div>
+      ${S.user ? `<button class="linkbtn" data-act="editData" style="margin:14px 4px 0">✏️ ${t('editData')}</button>` : ''}`;
   },
 
   done() {
@@ -550,7 +553,7 @@ const AFTER = {
 
 /* ------------------------------------------------------------------ действия */
 function startBooking() {
-  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null;
+  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null; S.editing = false;
   go('branch');
 }
 function nextFromTime() {
@@ -586,9 +589,9 @@ async function doBook() {
   if (S.busy) return;
   S.busy = true; setBar(S.moveFrom ? t('confirmMove') : t('confirm'), null, true); $('#barBtn').innerHTML = '<div class="spin" style="width:22px;height:22px;border-width:2.5px"></div>';
   try {
-    if (!S.user) {
+    if (!S.user || S.editing) {
       const r = await api('register', { name: S.regName, phone: S.regPhone, lang: S.lang });
-      S.user = r.user;
+      S.user = r.user; S.editing = false;
     }
     await askWriteAccess();
     const moved = !!S.moveFrom;
@@ -641,6 +644,10 @@ document.addEventListener('click', async e => {
   else if (a === 'share') sharePhone();
   else if (a === 'phoneManual') { haptic('sel'); S.phoneMode = 'manual'; render(); const p = $('#regPhone'); p && p.focus(); }
   else if (a === 'phoneShare') { haptic('sel'); S.phoneMode = 'share'; render(); }
+  else if (a === 'editData') {
+    haptic('sel'); S.editing = true; S.regName = S.user.name; S.regPhone = S.user.phone; S.phoneDraft = ''; S.phoneMode = null;
+    go('register');
+  }
   else if (a === 'phoneReset') { haptic('sel'); S.regPhone = ''; S.phoneDraft = ''; S.phoneMode = null; render(); }
   else if (a === 'map') {
     const url = branchInfo(el.dataset.branch).map;
