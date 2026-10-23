@@ -2,707 +2,839 @@
 <html lang="uz">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Breket Center</title>
-<link rel="icon" href="logo.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Breket Center — Admin</title>
+<link rel="icon" href="../logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="config.js"></script>
+<script src="../config.js"></script>
 <style>
-/* ------------------------------------------------------------------ тема */
 :root {
-  --brand: #4ED8D9;
-  --brand-ink: #04393A;
-  --brand-deep: #0E8F92;
-  --brand-soft: rgba(78, 216, 217, .14);
-  --bg: #F3F7F7;
-  --card: #FFFFFF;
-  --text: #0F1F20;
-  --muted: #687A7B;
-  --line: rgba(15, 31, 32, .08);
-  --danger: #E5484D;
-  --ok: #2F9E5B;
-  --radius: 18px;
+  --brand: #4ED8D9; --brand-ink: #04393A; --brand-deep: #0E8F92; --brand-soft: rgba(78,216,217,.14);
+  --bg: #F3F7F7; --card: #FFFFFF; --card2: #F8FBFB; --text: #0F1F20; --muted: #687A7B; --line: rgba(15,31,32,.09);
+  --danger: #D93D42; --danger-soft: rgba(229,72,77,.1); --ok: #2B8C52; --ok-soft: rgba(47,158,91,.12);
+  --warn: #B7791F; --warn-soft: rgba(214,158,46,.14);
   --shadow: 0 1px 2px rgba(15,31,32,.04), 0 6px 20px rgba(15,31,32,.05);
-  --safe-bottom: max(env(safe-area-inset-bottom), 0px);
+  --radius: 16px;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0E1617; --card: #172122; --text: #EAF2F2; --muted: #8FA2A3;
-    --line: rgba(234,242,242,.09); --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13);
-    --shadow: none;
+    --bg: #0E1617; --card: #172122; --card2: #1C2829; --text: #EAF2F2; --muted: #8FA2A3; --line: rgba(234,242,242,.1);
+    --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13); --shadow: none;
+    --danger: #FF6B6F; --ok: #4CC17E; --warn: #E8B04B;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0E1617; --card: #172122; --text: #EAF2F2; --muted: #8FA2A3;
-  --line: rgba(234,242,242,.09); --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13);
-  --shadow: none;
+  --bg: #0E1617; --card: #172122; --card2: #1C2829; --text: #EAF2F2; --muted: #8FA2A3; --line: rgba(234,242,242,.1);
+  --brand-deep: #4ED8D9; --brand-soft: rgba(78,216,217,.13); --shadow: none;
+  --danger: #FF6B6F; --ok: #4CC17E; --warn: #E8B04B;
 }
-
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+* { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--text); }
-body {
-  font-family: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  font-size: 15px; line-height: 1.45; min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
-button { font: inherit; color: inherit; border: 0; background: none; padding: 0; cursor: pointer; }
-.wrap { max-width: 520px; margin: 0 auto; padding: 14px 16px calc(110px + var(--safe-bottom)); }
+body { font-family: Manrope, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14.5px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; padding: 0; }
+a { color: var(--brand-deep); text-decoration: none; }
+.logo { background: var(--brand); -webkit-mask: url(../logo.png) center/contain no-repeat; mask: url(../logo.png) center/contain no-repeat; flex: none; }
 
-/* ------------------------------------------------------------------ шапка */
-.top { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 6px; }
-.back { width: 38px; height: 38px; border-radius: 12px; display: none; place-items: center; background: var(--card); box-shadow: var(--shadow); }
-.back svg { width: 20px; height: 20px; }
-.no-tg .back.show { display: grid; }
-.top-title { font-weight: 700; font-size: 16px; flex: 1; }
-.lang { display: flex; background: var(--card); border-radius: 12px; padding: 3px; box-shadow: var(--shadow); }
-.lang button { padding: 6px 10px; border-radius: 9px; font-weight: 700; font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
-.lang button.on { background: var(--brand); color: var(--brand-ink); }
+/* --- вход */
+.login { min-height: 100vh; display: grid; place-items: center; padding: 16px; }
+.login-card { width: 100%; max-width: 380px; background: var(--card); border-radius: 22px; box-shadow: var(--shadow); padding: 28px 24px; }
+.login-card .logo { width: 52px; height: 60px; margin-bottom: 14px; }
+.login-card h1 { margin: 0; font-size: 22px; font-weight: 800; }
+.login-card p { margin: 4px 0 22px; color: var(--muted); font-weight: 600; }
 
-.logo { width: 40px; height: 46px; background: var(--brand); -webkit-mask: url(logo.png) center/contain no-repeat; mask: url(logo.png) center/contain no-repeat; flex: none; }
+/* --- каркас */
+.shell { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+.side { position: sticky; top: 0; height: 100vh; padding: 18px 14px; display: flex; flex-direction: column; gap: 4px; border-right: 1px solid var(--line); background: var(--card); }
+.brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; }
+.brand .logo { width: 30px; height: 35px; }
+.brand b { display: block; font-weight: 800; font-size: 15px; line-height: 1.2; }
+.brand small { color: var(--muted); font-weight: 600; font-size: 12px; }
+.nav { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; font-weight: 700; color: var(--muted); width: 100%; text-align: left; }
+.nav svg { width: 20px; height: 20px; flex: none; }
+.nav:hover { background: var(--card2); color: var(--text); }
+.nav.on { background: var(--brand-soft); color: var(--brand-deep); }
+.side-foot { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+.who { font-weight: 700; font-size: 13px; }
+.who small { display: block; color: var(--muted); font-weight: 600; }
+.main { padding: 22px 28px 60px; max-width: 1180px; width: 100%; min-width: 0; }
+.head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.head h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -.015em; flex: 1; min-width: 160px; }
 
-.hero { display: flex; align-items: center; gap: 14px; padding: 18px 18px 18px 16px; margin: 4px 0 14px;
-  background: linear-gradient(135deg, var(--brand-soft), transparent 70%), var(--card);
-  border-radius: 22px; box-shadow: var(--shadow); }
-.hero .logo { width: 54px; height: 62px; }
-.hero h1 { font-size: 21px; line-height: 1.15; margin: 0; font-weight: 800; letter-spacing: -.01em; }
-.hero p { margin: 3px 0 0; color: var(--muted); font-size: 13.5px; font-weight: 600; }
+.seg { display: inline-flex; background: var(--card2); border-radius: 11px; padding: 3px; gap: 2px; }
+.seg button { padding: 6px 11px; border-radius: 9px; font-weight: 700; font-size: 12.5px; color: var(--muted); }
+.seg button.on { background: var(--card); color: var(--text); box-shadow: var(--shadow); }
+.side .seg { align-self: flex-start; }
 
-/* ------------------------------------------------------------------ блоки */
-h2 { font-size: 22px; font-weight: 800; letter-spacing: -.015em; margin: 6px 0 4px; }
-.sub { color: var(--muted); margin: 0 0 16px; font-weight: 500; }
-.label { font-size: 12.5px; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--muted); margin: 22px 4px 8px; }
-.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px; }
-.stack > * + * { margin-top: 10px; }
-
-.cta { display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 18px; border-radius: 20px;
-  background: var(--brand); color: var(--brand-ink); box-shadow: 0 10px 24px rgba(78,216,217,.32); transition: transform .12s; }
-.cta:active { transform: scale(.985); }
-.cta .ic { width: 46px; height: 46px; border-radius: 14px; background: rgba(255,255,255,.45); display: grid; place-items: center; flex: none; }
-.cta .ic svg { width: 24px; height: 24px; }
-.cta b { display: block; font-size: 17px; font-weight: 800; }
-.cta span { font-size: 13px; font-weight: 600; opacity: .75; }
-.cta .arrow { margin-left: auto; width: 20px; height: 20px; opacity: .6; }
-
-.row { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 14px 16px; }
-.row + .row { border-top: 1px solid var(--line); }
-.row .ri { width: 38px; height: 38px; border-radius: 12px; background: var(--brand-soft); color: var(--brand-deep); display: grid; place-items: center; flex: none; }
-.row .ri svg { width: 20px; height: 20px; }
-.row b { display: block; font-weight: 700; }
-.row small { display: block; color: var(--muted); font-size: 13px; font-weight: 500; }
-.row .chev { margin-left: auto; width: 18px; height: 18px; color: var(--muted); flex: none; }
-.list { padding: 0; overflow: hidden; }
-
-/* запись */
-.bk-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: var(--brand-soft); color: var(--brand-deep); }
-.badge.ok { background: rgba(47,158,91,.12); color: var(--ok); }
-.bk-date { font-size: 24px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
-.bk-time { font-size: 15px; color: var(--muted); font-weight: 600; margin-top: 4px; }
-.bk-time b { color: var(--text); }
-.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
-.btn { display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; padding: 10px 14px; border-radius: 14px; font-weight: 700; font-size: 14.5px; background: var(--brand-soft); color: var(--brand-deep); transition: transform .12s, opacity .12s; }
-.btn:active { transform: scale(.98); }
-.btn.primary { background: var(--brand); color: var(--brand-ink); }
-.btn.danger { background: rgba(229,72,77,.1); color: var(--danger); }
-.btn.full { grid-column: 1 / -1; width: 100%; }
-.btn[disabled] { opacity: .45; pointer-events: none; }
-.note { font-size: 13px; color: var(--muted); margin-top: 12px; font-weight: 500; }
-
-/* шаги */
-.steps { display: flex; gap: 6px; margin: 2px 0 16px; }
-.steps i { height: 4px; flex: 1; border-radius: 4px; background: var(--line); }
-.steps i.on { background: var(--brand); }
-
-.branch { display: block; width: 100%; text-align: left; padding: 16px; border: 2px solid transparent; }
-.branch.sel { border-color: var(--brand); }
-.branch .bn { display: flex; align-items: center; justify-content: space-between; }
-.branch b { font-size: 18px; font-weight: 800; }
-.days { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
-.days span { font-size: 12px; font-weight: 700; padding: 4px 8px; border-radius: 8px; background: var(--brand-soft); color: var(--brand-deep); }
-.branch small { display: block; color: var(--muted); margin-top: 8px; font-size: 13px; font-weight: 500; }
-.branch .near { color: var(--text); font-weight: 700; }
-
-.grid { display: grid; gap: 8px; }
-.g3 { grid-template-columns: repeat(3, 1fr); }
-.g4 { grid-template-columns: repeat(4, 1fr); }
-.chip { background: var(--card); box-shadow: var(--shadow); border-radius: 14px; padding: 12px 6px; text-align: center; border: 2px solid transparent; transition: transform .1s; }
-.chip:active { transform: scale(.96); }
-.chip.sel { border-color: var(--brand); background: var(--brand-soft); }
-.chip .w { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
-.chip .d { font-size: 22px; font-weight: 800; line-height: 1.15; }
-.chip .m { font-size: 12px; font-weight: 600; color: var(--muted); }
-.chip .t { font-size: 17px; font-weight: 800; }
-.month { font-weight: 800; font-size: 14px; margin: 16px 2px 8px; text-transform: capitalize; }
-.month:first-child { margin-top: 0; }
-
-.sum .line { display: flex; gap: 12px; padding: 11px 0; align-items: flex-start; }
-.sum .line + .line { border-top: 1px solid var(--line); }
-.sum .k { color: var(--muted); font-size: 13.5px; font-weight: 600; width: 92px; flex: none; }
-.sum .v { font-weight: 700; }
-.sum .v small { display: block; font-weight: 500; color: var(--muted); }
-
-.field { display: block; margin-bottom: 12px; }
-.field span { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 4px 6px; }
-.input { width: 100%; font: inherit; font-weight: 600; font-size: 16px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--text); outline: none; }
+/* --- элементы */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 8px 14px; border-radius: 11px; font-weight: 700; font-size: 13.5px; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--line); white-space: nowrap; }
+.btn:hover { border-color: var(--brand); }
+.btn svg { width: 17px; height: 17px; }
+.btn.primary { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+.btn.danger { color: var(--danger); }
+.btn.ghost { background: none; box-shadow: none; border-color: transparent; }
+.btn.sm { min-height: 30px; padding: 4px 10px; font-size: 12.5px; border-radius: 9px; }
+.btn[disabled] { opacity: .5; pointer-events: none; }
+.input, select.input, textarea.input { width: 100%; padding: 10px 12px; border-radius: 11px; border: 1.5px solid var(--line); background: var(--card); outline: none; font-weight: 600; }
 .input:focus { border-color: var(--brand); }
-.phone-in { display: flex; align-items: center; border: 2px solid var(--line); border-radius: 14px; background: var(--card); }
-.phone-in:focus-within { border-color: var(--brand); }
-.phone-in span { padding: 0 2px 0 16px; font-weight: 700; font-size: 16px; color: var(--muted); }
-.phone-in .input { border: 0; padding-left: 8px; background: none; }
-.or { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 13px; font-weight: 700; }
-.or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-.linkbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--brand-deep); font-weight: 700; font-size: 14px; }
-.phone-ok { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--brand-soft); font-weight: 700; }
+label.f { display: block; }
+label.f > span { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); margin: 0 2px 5px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--line); }
+.pad { padding: 18px; }
+.muted { color: var(--muted); }
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--card2); color: var(--muted); white-space: nowrap; }
+.badge.bot { background: var(--brand-soft); color: var(--brand-deep); }
+.badge.ok { background: var(--ok-soft); color: var(--ok); }
+.badge.no { background: var(--danger-soft); color: var(--danger); }
+.badge.warn { background: var(--warn-soft); color: var(--warn); }
+.empty { padding: 28px; text-align: center; color: var(--muted); font-weight: 600; }
 
-.done { text-align: center; padding: 24px 8px 8px; }
-.done .tick { width: 78px; height: 78px; border-radius: 50%; background: var(--brand); color: var(--brand-ink); display: grid; place-items: center; margin: 0 auto 16px; animation: pop .45s cubic-bezier(.2,1.4,.4,1); }
-.done .tick svg { width: 38px; height: 38px; }
-@keyframes pop { from { transform: scale(.4); opacity: 0; } }
+/* --- расписание */
+.datebar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.datebar .input { width: auto; padding: 7px 10px; }
+.strip { display: flex; gap: 6px; overflow-x: auto; padding: 2px 2px 10px; margin-bottom: 14px; scrollbar-width: thin; }
+.day { flex: none; width: 66px; padding: 8px 4px; border-radius: 13px; background: var(--card); border: 1.5px solid var(--line); text-align: center; }
+.day .w { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+.day .d { font-size: 19px; font-weight: 800; line-height: 1.2; }
+.day .c { font-size: 11px; font-weight: 700; color: var(--muted); min-height: 15px; }
+.day.on { border-color: var(--brand); background: var(--brand-soft); }
+.day.today .d { color: var(--brand-deep); }
+.day.off { opacity: .5; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; align-items: start; }
+.bcard-h { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.bcard-h b { font-size: 17px; font-weight: 800; }
+.bcard-h .sp { flex: 1; }
+.slot { display: grid; grid-template-columns: 58px 1fr auto; gap: 10px; align-items: center; padding: 9px 16px; border-bottom: 1px solid var(--line); min-height: 52px; }
+.slot:last-child { border-bottom: 0; }
+.slot .tm { font-weight: 800; font-size: 15px; font-variant-numeric: tabular-nums; }
+.slot .nm { font-weight: 700; }
+.slot .ph { font-size: 13px; color: var(--muted); font-weight: 600; }
+.slot .meta { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 3px; }
+.slot .note { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.slot .acts { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.slot.free .nm { color: var(--muted); font-weight: 600; }
+.slot.blocked { background: repeating-linear-gradient(-45deg, transparent 0 8px, var(--card2) 8px 16px); }
+.slot.came { background: linear-gradient(90deg, var(--ok-soft), transparent 40%); }
+.slot.noshow { background: linear-gradient(90deg, var(--danger-soft), transparent 40%); }
+.slot.offgrid .tm::after { content: '*'; color: var(--warn); }
+.ib { width: 32px; height: 32px; border-radius: 9px; display: inline-grid; place-items: center; color: var(--muted); border: 1px solid var(--line); background: var(--card); }
+.ib:hover { color: var(--text); border-color: var(--brand); }
+.ib svg { width: 16px; height: 16px; }
+.ib.ok:hover { color: var(--ok); border-color: var(--ok); }
+.ib.no:hover { color: var(--danger); border-color: var(--danger); }
+details.cx { border-top: 1px solid var(--line); }
+details.cx summary { padding: 10px 16px; cursor: pointer; font-weight: 700; color: var(--muted); font-size: 13px; }
+.closed { padding: 26px 16px; text-align: center; color: var(--muted); font-weight: 700; }
 
-/* нижняя кнопка */
-.bar { position: fixed; left: 0; right: 0; bottom: 0; padding: 12px 16px calc(12px + var(--safe-bottom)); background: linear-gradient(transparent, var(--bg) 30%); z-index: 5; }
-.bar .btn { max-width: 488px; margin: 0 auto; min-height: 54px; font-size: 16px; border-radius: 16px; box-shadow: 0 10px 24px rgba(78,216,217,.3); }
+/* --- таблицы */
+.table { width: 100%; border-collapse: collapse; }
+.table th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.table td { padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.table tr:last-child td { border-bottom: 0; }
+.table tr.click { cursor: pointer; }
+.table tr.click:hover td { background: var(--card2); }
+.scroll-x { overflow-x: auto; }
 
-.empty { text-align: center; padding: 28px 16px; color: var(--muted); font-weight: 600; }
-.loader { display: grid; place-items: center; min-height: 60vh; }
-.spin { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--brand-soft); border-top-color: var(--brand); animation: s .8s linear infinite; }
+/* --- статистика */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.kpi { padding: 16px; }
+.kpi small { display: block; font-size: 12.5px; color: var(--muted); font-weight: 700; }
+.kpi b { display: block; font-size: 28px; font-weight: 800; letter-spacing: -.02em; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 160px; padding: 16px 18px 0; }
+.bar { flex: 1; display: flex; flex-direction: column-reverse; min-width: 6px; border-radius: 5px 5px 0 0; overflow: hidden; background: var(--card2); position: relative; }
+.bar i { display: block; }
+.bar i.c { background: var(--ok); }
+.bar i.n { background: var(--danger); }
+.bar i.p { background: var(--brand); }
+.bar-l { display: flex; gap: 4px; padding: 6px 18px 14px; font-size: 10.5px; color: var(--muted); font-weight: 700; }
+.bar-l span { flex: 1; text-align: center; min-width: 6px; overflow: hidden; }
+.legend { display: flex; gap: 14px; font-size: 12.5px; font-weight: 700; color: var(--muted); padding: 0 18px 14px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+
+/* --- настройки */
+.days-pick { display: flex; gap: 6px; flex-wrap: wrap; }
+.days-pick label { display: inline-flex; align-items: center; justify-content: center; min-width: 46px; padding: 7px 8px; border-radius: 10px; border: 1.5px solid var(--line); font-weight: 700; font-size: 13px; cursor: pointer; user-select: none; }
+.days-pick input { display: none; }
+.days-pick label:has(input:checked) { background: var(--brand); color: var(--brand-ink); border-color: transparent; }
+h3 { font-size: 16px; font-weight: 800; margin: 0 0 14px; }
+.sect + .sect { margin-top: 16px; }
+
+/* --- модальное окно, панель, тост */
+.overlay { position: fixed; inset: 0; background: rgba(5,15,16,.45); display: grid; place-items: center; padding: 16px; z-index: 50; animation: fi .15s; }
+@keyframes fi { from { opacity: 0; } }
+.modal { width: 100%; max-width: 520px; max-height: calc(100vh - 32px); overflow: auto; background: var(--card); border-radius: 20px; padding: 22px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.modal h2 { margin: 0 0 16px; font-size: 19px; font-weight: 800; }
+.modal .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+.stack > * + * { margin-top: 12px; }
+.check { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13.5px; }
+.check input { width: 18px; height: 18px; accent-color: var(--brand-deep); }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); background: var(--card); z-index: 40; box-shadow: -10px 0 40px rgba(0,0,0,.15); overflow: auto; padding: 22px; animation: sl .2s; }
+@keyframes sl { from { transform: translateX(30px); opacity: 0; } }
+.toast { visibility: hidden; position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 140%); background: var(--text); color: var(--bg); padding: 12px 18px; border-radius: 12px; font-weight: 700; z-index: 60; transition: transform .25s; max-width: calc(100% - 32px); }
+.toast.show { transform: translate(-50%, 0); visibility: visible; }
+.toast.err { background: var(--danger); color: #fff; }
+.spin { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--brand-soft); border-top-color: var(--brand); animation: s .8s linear infinite; margin: 40px auto; }
 @keyframes s { to { transform: rotate(360deg); } }
-.toast { position: fixed; left: 16px; right: 16px; top: 14px; max-width: 488px; margin: 0 auto; z-index: 10; background: var(--text); color: var(--bg); padding: 13px 16px; border-radius: 14px; font-weight: 600; font-size: 14px; transform: translateY(-140%); transition: transform .3s; }
-.toast.show { transform: none; }
-.demo { font-size: 12px; font-weight: 700; text-align: center; color: var(--brand-deep); background: var(--brand-soft); padding: 7px; border-radius: 10px; margin-bottom: 10px; }
-.fade { animation: f .25s ease; }
-@keyframes f { from { opacity: 0; transform: translateY(6px); } }
+
+/* --- телефон */
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); }
+  .head h1 { min-width: 0; flex-basis: 100%; }
+  .datebar { width: 100%; }
+  .datebar .input { flex: 1; min-width: 0; }
+  .head .seg { max-width: 100%; overflow-x: auto; }
+  .side { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: auto; flex-direction: row; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); border-right: 0; border-top: 1px solid var(--line); z-index: 30; justify-content: space-around; }
+  .brand, .side-foot { display: none; }
+  .nav { flex-direction: column; gap: 2px; font-size: 10.5px; padding: 6px 4px; width: auto; flex: 1; text-align: center; }
+  .main { padding: 16px 14px 100px; }
+  .mob-only { display: inline-flex !important; }
+  .cols { grid-template-columns: 1fr; }
+  .slot { grid-template-columns: 50px 1fr; }
+  .slot .acts { grid-column: 2; justify-content: flex-start; }
+  .grid2, .grid3 { grid-template-columns: 1fr; }
+  .hide-m { display: none; }
+}
+.mob-only { display: none !important; }
+
+textarea.input { min-height: 110px; resize: vertical; line-height: 1.45; }
+.slot.keldi { background: linear-gradient(90deg, var(--ok-soft), transparent 45%); }
+.slot.noshow { background: linear-gradient(90deg, var(--danger-soft), transparent 45%); }
+.slot.busy .nm { color: var(--muted); font-weight: 600; }
+.ib.on { background: var(--ok); color: #fff; border-color: var(--ok); }
+.bubble { background: var(--card2); border-radius: 16px 16px 16px 4px; padding: 12px 14px; white-space: pre-wrap; font-weight: 500; max-width: 420px; border: 1px solid var(--line); }
+.bubble .bbtn { margin-top: 10px; text-align: center; padding: 8px; border-radius: 10px; background: var(--brand-soft); color: var(--brand-deep); font-weight: 700; font-size: 13px; }
+.notice { padding: 12px 14px; border-radius: 12px; background: var(--warn-soft); color: var(--warn); font-weight: 600; font-size: 13.5px; margin-bottom: 14px; }
+.kv { display: flex; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.kv:last-child { border-bottom: 0; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <button class="back" id="back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
-    <div class="top-title" id="topTitle"></div>
-    <div class="lang"><button data-l="uz">UZ</button><button data-l="ru">RU</button></div>
-  </div>
-  <div id="app"><div class="loader"><div class="spin"></div></div></div>
-</div>
-<div class="bar" id="bar" hidden><button class="btn primary full" id="barBtn"></button></div>
+<div id="root"><div class="spin"></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-// Адрес сервера — в файле config.js
-const API_URL = window.BREKET_API || '';
+const API_URL = new URLSearchParams(location.search).get('api') || window.BREKET_API || '';
 
-/* ================================================================== */
-const tg = window.Telegram && window.Telegram.WebApp;
-const inTg = !!(tg && tg.initData);
-const DEMO = !inTg;
-if (!inTg) document.documentElement.classList.add('no-tg');
-
-const I = {
-  arrow: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>',
-  cal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18M12 14v4M10 16h4"/></svg>',
-  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.1-7-11.5a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.6"/></svg>',
-  chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg>',
-  check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
-  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18h2"/></svg>'
+/* ======================================================== иконки */
+const ic = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+const IC = {
+  cal: ic('<rect x="3" y="4.5" width="18" height="17" rx="3.5"/><path d="M8 2.5v4M16 2.5v4M3 10h18"/>'),
+  users: ic('<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.6 3.3-5.5 6.5-5.5s5.9 1.9 6.5 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M17 14.5c2.4 0 4 1.5 4.5 4"/>'),
+  chart: ic('<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'),
+  gear: ic('<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/>'),
+  shield: ic('<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/>'),
+  mega: ic('<path d="M3 11v2a1 1 0 0 0 1 1h2l5 4V6L6 10H4a1 1 0 0 0-1 1z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/>'),
+  plus: ic('<path d="M12 5v14M5 12h14"/>'),
+  left: ic('<path d="M15 18l-6-6 6-6"/>'),
+  right: ic('<path d="M9 18l6-6-6-6"/>'),
+  check: ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
+  x: ic('<path d="M6 6l12 12M18 6L6 18"/>'),
+  edit: ic('<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M14 6l4 4"/>'),
+  move: ic('<path d="M8 7h12M16 3l4 4-4 4M16 17H4M8 13l-4 4 4 4"/>'),
+  dl: ic('<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>'),
+  out: ic('<path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 16l-4-4 4-4M6 12h10"/>'),
+  phone: ic('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/>'),
+  trash: ic('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>'),
+  send: ic('<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>'),
+  sheet: ic('<rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M4 9h16M4 15h16M10 3v18"/>')
 };
 
-/* ------------------------------------------------------------------ тексты */
-const T = {
+/* ======================================================== тексты */
+const L = {
   uz: {
-    clinic: 'Breket Center', doctor: 'Dr. Shahboz klinikasi',
-    book: 'Aktivatsiyaga yozilish', bookSub: 'Onlayn, 1 daqiqada',
-    myBooking: 'Sizning yozuvingiz', addresses: 'Manzillarimiz', admin: "Admin bilan bog'lanish", adminSub: 'Savollar bo\'lsa yozing',
-    map: 'Xaritada ochish', branch: 'Filial', date: 'Sana', time: 'Vaqt', name: 'Ism', phone: 'Telefon', address: 'Manzil',
-    chooseBranch: 'Filialni tanlang', chooseBranchSub: 'Qaysi filialga kelasiz?',
-    chooseDate: 'Sanani tanlang', chooseTime: 'Vaqtni tanlang',
-    nearest: 'Eng yaqin bo\'sh kun', noPlaces: "Hozircha bo'sh joy yo'q",
-    noSlotsDay: "Bu kunda bo'sh joyimiz yo'q. Boshqa sanani tanlang.",
-    yourData: "Ma'lumotlaringiz", yourDataSub: 'Bir marta kiritiladi',
-    fullName: 'Ism va familiya', namePh: 'Masalan: Aziza Karimova', sharePhone: 'Raqamni yuborish',
-    shareHint: 'Raqam Telegram orqali yuboriladi', next: 'Davom etish',
-    editData: "Ism yoki raqamni o'zgartirish",
-    or: 'yoki', typePhone: "Raqamni qo'lda kiritish", useShare: 'Telegram orqali yuborish', changePhone: "O'zgartirish",
-    manualHint: 'Siz bilan bog‘lanadigan raqam, masalan: 90 123 45 67',
-    confirmTitle: 'Tasdiqlang', confirmSub: "Ma'lumotlarni tekshiring", confirm: 'Tasdiqlash', confirmMove: "Ko'chirishni tasdiqlash",
-    oldBooking: 'Eski yozuv',
-    doneTitle: 'Yozildingiz!', doneMoved: "Yozuv ko'chirildi!", doneSub: 'Tashrifdan oldin Telegramda eslatma yuboramiz.',
-    home: 'Bosh sahifa', coming: 'Kelaman', confirmed: 'Tasdiqlangan', waiting: 'Faol',
-    move: "Ko'chirish", cancel: 'Bekor qilish', askCancel: 'Yozuvni bekor qilasizmi?', cancelled: 'Yozuv bekor qilindi',
-    tooLate: "Tashrif kuni bekor qilish yoki ko'chirish faqat admin orqali.",
-    thanks: 'Rahmat! Sizni kutamiz', slotTaken: 'Bu vaqt hozirgina band qilindi, boshqasini tanlang.',
-    changed: "Yozuvingiz o'zgartirilgan, admin bilan bog'laning.", error: "Xatolik yuz berdi. Birozdan keyin urinib ko'ring.",
-    limit: 'Sizda allaqachon faol yozuv bor.', demo: 'Demo rejim — jadvalga yozilmaydi', filial: 'filiali',
-    days: ['Ya', 'Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha'],
-    daysFull: ['yakshanba', 'dushanba', 'seshanba', 'chorshanba', 'payshanba', 'juma', 'shanba'],
-    months: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'],
-    monthsShort: ['yan', 'fev', 'mar', 'apr', 'may', 'iyn', 'iyl', 'avg', 'sen', 'okt', 'noy', 'dek'],
-    fmtDate: (d, m, w) => `${d}-${m}, ${w}`, monthTitle: (m, y) => `${m} ${y}`
+    title: 'Admin panel', login: 'Login', password: 'Parol', signIn: 'Kirish', signOut: 'Chiqish',
+    nav: { schedule: 'Jadval', broadcast: 'Rassilka', stats: 'Statistika', users: 'Bot bemorlari', settings: 'Sozlamalar', admins: 'Adminlar' },
+    today: 'Bugun', add: 'Yozish', free: "Bo'sh", busy: 'Band', noAct: "Bu kunda aktivatsiya yo'q", noSheet: "Jadvalda bu oy uchun list yo'q",
+    booked: 'band', freeN: "bo'sh", bot: 'Bot', kelaman: 'Kelaman', keldi: 'Keldi', kelmadi: 'Kelmadi',
+    markCame: 'Keldi deb belgilash', edit: 'Tahrirlash', move: "Ko'chirish", cancel: 'Bekor qilish',
+    askCancel: "Yozuvni bekor qilasizmi? Jadvaldagi bemor ma'lumotlari o'chiriladi.",
+    newBooking: 'Yangi yozuv', editBooking: 'Tahrirlash', moveBooking: "Yozuvni ko'chirish",
+    name: 'Ism familiya', phone: 'Telefon', branch: 'Filial', date: 'Sana', time: 'Vaqt', kanal: 'Kanal', izoh: 'Izoh',
+    notify: 'Bemorga Telegramda xabar yuborish', save: 'Saqlash', close: 'Yopish', noFree: "Bu kunda bo'sh vaqt yo'q", saved: 'Saqlandi', done: 'Bajarildi',
+    linked: 'Bemor bot orqali topildi — eslatmalar yuboriladi', openSheet: 'Jadvalni ochish',
+    bcTitle: 'Bot orqali xabar yuborish', bcUz: "Matn (o'zbekcha)", bcRu: 'Matn (ruscha)', bcWho: 'Kimga', bcAll: 'Hammaga', bcBtn: '«Yozilish» tugmasini qo‘shish',
+    bcPreview: "Ko'rinishi", bcSend: 'Yuborish', bcAsk: n => `${n} kishiga yuborilsinmi?`, bcDone: (s, t) => `Yuborildi: ${s} / ${t}`, bcHint: "Har bir bemor o'z tilida oladi. Bitta matn yozsangiz — hammaga shu yuboriladi.",
+    people: 'kishi', blocked: 'Botni bloklagan',
+    period: { week: '7 kun', month: '30 kun', thisMonth: 'Shu oy', next: 'Keyingi 30 kun' },
+    k: { total: 'Aktivatsiyaga yozilganlar', came: 'Keldi', noshow: 'Kelmadi (status)', unmarked: 'Belgilanmagan', upcoming: 'Kutilmoqda', rate: 'Kelish foizi', free: "Bo'sh qolgan joylar" },
+    botStats: 'Bot orqali', botK: { created: 'Yozuvlar', cancelled: 'Bekor', moved: "Ko'chirilgan", confirmed: '«Kelaman»' },
+    byKanal: 'Kanal bo‘yicha', byBranch: 'Filiallar', byDay: 'Kunlar kesimida', export: 'Excel (CSV)',
+    search: 'Ism yoki telefon', lang: 'Til', activeB: 'Faol yozuv', total: 'Jami',
+    addresses: 'Filial manzillari', addrUz: "Manzil (o'zbekcha)", addrRu: 'Manzil (ruscha)', lmUz: "Mo'ljal (o'zbekcha)", lmRu: "Mo'ljal (ruscha)", map: 'Xarita havolasi',
+    general: 'Umumiy', adminUser: 'Admin nik (Telegram, bemorlar uchun)', botKanal: 'Bot yozuvlari uchun «Kanal» qiymati', empty: "(bo'sh qoldirish)",
+    admins: 'Adminlar', addAdmin: "Admin qo'shish", role: 'Roli', owner: 'Egasi', adminRole: 'Admin', remove: "O'chirish",
+    myPassword: "Parolni o'zgartirish", oldPw: 'Eski parol', newPw: 'Yangi parol (kamida 6 belgi)', log: 'Amallar tarixi',
+    errors: { login_failed: "Login yoki parol noto'g'ri", too_many_attempts: "Ko'p urinish. 15 daqiqadan keyin urinib ko'ring", slot_taken: 'Bu vaqt band',
+      row_changed: "Jadvaldagi qator o'zgargan — sahifa yangilandi", forbidden: "Ruxsat yo'q (faqat egasi)", exists: 'Bunday login bor', bad_request: "Ma'lumotlar noto'g'ri",
+      not_found: 'Topilmadi', error: 'Xatolik', network: 'Internet bilan muammo', not_configured: "config.js da API manzili ko'rsatilmagan" },
+    days: ['Ya', 'Du', 'Se', 'Chor', 'Pay', 'Ju', 'Sha'], months: ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'],
+    daysFull: ['Yakshanba', 'Dushanba', 'Seshanba', 'Chorshanba', 'Payshanba', 'Juma', 'Shanba'],
+    fmt: (d, m, w) => `${d}-${m}, ${w}`
   },
   ru: {
-    clinic: 'Breket Center', doctor: 'Клиника Dr. Shahboz',
-    book: 'Записаться на активацию', bookSub: 'Онлайн, за 1 минуту',
-    myBooking: 'Ваша запись', addresses: 'Наши адреса', admin: 'Связаться с админом', adminSub: 'Если есть вопросы',
-    map: 'Открыть на карте', branch: 'Филиал', date: 'Дата', time: 'Время', name: 'Имя', phone: 'Телефон', address: 'Адрес',
-    chooseBranch: 'Выберите филиал', chooseBranchSub: 'В какой филиал придёте?',
-    chooseDate: 'Выберите дату', chooseTime: 'Выберите время',
-    nearest: 'Ближайший свободный день', noPlaces: 'Пока нет свободных мест',
-    noSlotsDay: 'На этот день свободных мест нет. Выберите другую дату.',
-    yourData: 'Ваши данные', yourDataSub: 'Вводятся один раз',
-    fullName: 'Имя и фамилия', namePh: 'Например: Азиза Каримова', sharePhone: 'Отправить номер',
-    shareHint: 'Номер передаётся через Telegram', next: 'Продолжить',
-    editData: 'Изменить имя или номер',
-    or: 'или', typePhone: 'Ввести номер вручную', useShare: 'Отправить через Telegram', changePhone: 'Изменить',
-    manualHint: 'Номер для связи с вами, например: 90 123 45 67',
-    confirmTitle: 'Подтвердите', confirmSub: 'Проверьте данные', confirm: 'Подтвердить запись', confirmMove: 'Подтвердить перенос',
-    oldBooking: 'Старая запись',
-    doneTitle: 'Вы записаны!', doneMoved: 'Запись перенесена!', doneSub: 'Перед визитом пришлём напоминание в Telegram.',
-    home: 'На главную', coming: 'Приду', confirmed: 'Подтверждено', waiting: 'Активна',
-    move: 'Перенести', cancel: 'Отменить', askCancel: 'Отменить запись?', cancelled: 'Запись отменена',
-    tooLate: 'В день визита отменить или перенести запись можно только через администратора.',
-    thanks: 'Спасибо! Ждём вас', slotTaken: 'Это время только что заняли, выберите другое.',
-    changed: 'Ваша запись была изменена, свяжитесь с администратором.', error: 'Произошла ошибка. Попробуйте чуть позже.',
-    limit: 'У вас уже есть активная запись.', demo: 'Демо-режим — в таблицу не пишет', filial: '',
-    days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
-    daysFull: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-    months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
-    monthsShort: ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'],
-    monthsNom: ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь'],
-    fmtDate: (d, m, w) => `${d} ${m}, ${w}`, monthTitle: (m, y) => `${m} ${y}`
+    title: 'Админ-панель', login: 'Логин', password: 'Пароль', signIn: 'Войти', signOut: 'Выйти',
+    nav: { schedule: 'Расписание', broadcast: 'Рассылка', stats: 'Статистика', users: 'Пациенты бота', settings: 'Настройки', admins: 'Админы' },
+    today: 'Сегодня', add: 'Записать', free: 'Свободно', busy: 'Занято', noAct: 'В этот день нет активаций', noSheet: 'В таблице нет листа на этот месяц',
+    booked: 'занято', freeN: 'свободно', bot: 'Бот', kelaman: 'Придёт', keldi: 'Пришёл', kelmadi: 'Не пришёл',
+    markCame: 'Отметить «Keldi»', edit: 'Изменить', move: 'Перенести', cancel: 'Отменить',
+    askCancel: 'Отменить запись? Данные пациента в строке таблицы будут очищены.',
+    newBooking: 'Новая запись', editBooking: 'Изменить', moveBooking: 'Перенос записи',
+    name: 'Имя и фамилия', phone: 'Телефон', branch: 'Филиал', date: 'Дата', time: 'Время', kanal: 'Канал', izoh: 'Комментарий',
+    notify: 'Отправить пациенту сообщение в Telegram', save: 'Сохранить', close: 'Закрыть', noFree: 'На этот день свободного времени нет', saved: 'Сохранено', done: 'Готово',
+    linked: 'Пациент найден в боте — напоминания будут приходить', openSheet: 'Открыть таблицу',
+    bcTitle: 'Рассылка через бота', bcUz: 'Текст (узбекский)', bcRu: 'Текст (русский)', bcWho: 'Кому', bcAll: 'Всем', bcBtn: 'Добавить кнопку «Записаться»',
+    bcPreview: 'Как увидит пациент', bcSend: 'Отправить', bcAsk: n => `Отправить ${n} пациентам?`, bcDone: (s, t) => `Отправлено: ${s} из ${t}`, bcHint: 'Каждый пациент получит текст на своём языке. Если заполнить один — всем уйдёт он.',
+    people: 'чел.', blocked: 'Заблокировал бота',
+    period: { week: '7 дней', month: '30 дней', thisMonth: 'Этот месяц', next: 'Следующие 30 дней' },
+    k: { total: 'Записано на активацию', came: 'Пришли', noshow: 'Не пришли (статус)', unmarked: 'Не отмечено', upcoming: 'Ожидаются', rate: 'Явка', free: 'Свободных мест осталось' },
+    botStats: 'Через бота', botK: { created: 'Записей', cancelled: 'Отмен', moved: 'Переносов', confirmed: '«Приду»' },
+    byKanal: 'По каналам', byBranch: 'По филиалам', byDay: 'По дням', export: 'Excel (CSV)',
+    search: 'Имя или телефон', lang: 'Язык', activeB: 'Активная запись', total: 'Всего',
+    addresses: 'Адреса филиалов', addrUz: 'Адрес (узбекский)', addrRu: 'Адрес (русский)', lmUz: 'Ориентир (узбекский)', lmRu: 'Ориентир (русский)', map: 'Ссылка на карту',
+    general: 'Общие', adminUser: 'Ник админа (Telegram, для пациентов)', botKanal: 'Что писать в «Kanal» для записей из бота', empty: '(оставлять пустым)',
+    admins: 'Админы', addAdmin: 'Добавить админа', role: 'Роль', owner: 'Владелец', adminRole: 'Админ', remove: 'Удалить',
+    myPassword: 'Сменить пароль', oldPw: 'Старый пароль', newPw: 'Новый пароль (минимум 6 символов)', log: 'История действий',
+    errors: { login_failed: 'Неверный логин или пароль', too_many_attempts: 'Слишком много попыток. Попробуйте через 15 минут', slot_taken: 'Это время занято',
+      row_changed: 'Строка в таблице изменилась — страница обновлена', forbidden: 'Нет прав (только владелец)', exists: 'Такой логин уже есть', bad_request: 'Неверные данные',
+      not_found: 'Не найдено', error: 'Ошибка', network: 'Проблема с интернетом', not_configured: 'В config.js не указан адрес API' },
+    days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'], months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'],
+    daysFull: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
+    fmt: (d, m, w) => `${d} ${m}, ${w}`
   }
 };
 
-/* ------------------------------------------------------------------ состояние */
-const S = {
-  lang: 'uz', user: null, config: null, bookings: [], slots: {}, today: '',
-  screen: 'home', branch: null, day: null, time: null, moveFrom: null, regName: '', regPhone: '', result: null, busy: false
-};
-const t = k => T[S.lang][k];
+/* ======================================================== состояние и утилиты */
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (e) {} } };
+const S = { lang: store.get('bc_lang') || ((navigator.language || '').startsWith('ru') ? 'ru' : 'uz'), token: store.get('bc_token'), admin: null,
+  today: '', page: 'schedule', day: '', dayData: null, overview: null, statsRange: 'month', branchOrder: [], settings: null, kanal: [] };
+const t = k => k.split('.').reduce((o, x) => o && o[x], L[S.lang]) ?? k;
 const $ = s => document.querySelector(s);
-const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const dObj = day => new Date(day + 'T12:00:00Z');
-const fmtLong = day => { const d = dObj(day); return T[S.lang].fmtDate(d.getUTCDate(), t('months')[d.getUTCMonth()], t('daysFull')[d.getUTCDay()]); };
-const fmtShort = day => { const d = dObj(day); return `${d.getUTCDate()} ${t('monthsShort')[d.getUTCMonth()]}`; };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const addDays = (day, n) => { const d = new Date(day + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+const wd = day => new Date(day + 'T12:00:00Z').getUTCDay();
+const fmtDay = day => { const d = new Date(day + 'T12:00:00Z'); return L[S.lang].fmt(d.getUTCDate(), t('months')[d.getUTCMonth()], t('daysFull')[d.getUTCDay()]); };
+const dm = day => day.slice(8, 10) + '.' + day.slice(5, 7);
 const fmtPhone = p => { p = String(p || '').replace(/\D/g, '').slice(-9); return p.length === 9 ? `+998 ${p.slice(0, 2)} ${p.slice(2, 5)} ${p.slice(5, 7)} ${p.slice(7)}` : p; };
-const branchInfo = b => (S.config && S.config.branches[b]) || {};
-const addr = b => branchInfo(b)['address_' + S.lang] || branchInfo(b).address_uz || '';
-const landmark = b => branchInfo(b)['landmark_' + S.lang] || '';
-const branchName = b => S.lang === 'uz' ? `${b} ${t('filial')}` : b;
-const DEFAULT_DAYS = { Sergeli: [1, 3, 5], Yashnabod: [2, 4, 6] };
-const branchDays = b => (branchInfo(b).days || DEFAULT_DAYS[b] || []);
 
-function haptic(kind) {
-  try {
-    if (!inTg) return;
-    if (kind === 'sel') tg.HapticFeedback.selectionChanged();
-    else tg.HapticFeedback.notificationOccurred(kind);
-  } catch (e) {}
+function toast(msg, err) {
+  const el = $('#toast'); el.textContent = msg; el.className = 'toast show' + (err ? ' err' : '');
+  clearTimeout(toast._t); toast._t = setTimeout(() => { el.className = 'toast' + (err ? ' err' : ''); }, 3200);
 }
-function toast(msg) {
-  const el = $('#toast'); el.textContent = msg; el.classList.add('show');
-  clearTimeout(toast._t); toast._t = setTimeout(() => el.classList.remove('show'), 3200);
-}
-function confirmDialog(msg) {
-  return new Promise(res => {
-    if (inTg && tg.isVersionAtLeast('6.2')) tg.showConfirm(msg, ok => res(ok));
-    else res(window.confirm(msg));
-  });
-}
+const errMsg = e => L[S.lang].errors[e.message] || (L[S.lang].errors.error + ': ' + (e.detail || e.message));
 
-/* ------------------------------------------------------------------ API */
 async function api(action, data = {}) {
-  if (DEMO) return demoApi(action, data);
   if (!API_URL) throw new Error('not_configured');
-  const r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action, initData: tg.initData, ...data }) });
+  let r;
+  try {
+    r = await fetch(API_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ admin: true, token: S.token, action, ...data }) });
+  } catch (e) { throw new Error('network'); }
   const txt = await r.text();
   let j;
-  try { j = JSON.parse(txt); } catch (e) { const er = new Error('bad_response'); er.detail = txt.slice(0, 120); throw er; }
-  if (!j.ok) { const er = new Error(j.error || 'error'); er.detail = j.detail; throw er; }
+  try { j = JSON.parse(txt); } catch (e) { const er = new Error('error'); er.detail = txt.slice(0, 120); throw er; }
+  if (!j.ok) {
+    if (j.error === 'auth' && action !== 'login') logout(true);
+    const er = new Error(j.error || 'error'); er.detail = j.detail; throw er;
+  }
   return j;
 }
-function errText(e) {
-  const m = { slot_taken: 'slotTaken', too_late: 'tooLate', changed_by_admin: 'changed', limit: 'limit' }[e.message];
-  if (m) return t(m);
-  const d = e.detail || e.message;
-  return t('error') + (d && d !== 'error' ? ` [${d}]` : '');
+
+/* ======================================================== модальные окна */
+function modal(html, onMount) {
+  closeModal();
+  const o = document.createElement('div');
+  o.className = 'overlay'; o.id = 'overlay';
+  o.innerHTML = `<div class="modal" role="dialog">${html}</div>`;
+  o.addEventListener('mousedown', e => { if (e.target === o) closeModal(); });
+  document.body.appendChild(o);
+  onMount && onMount(o);
+  const f = o.querySelector('input:not([type=checkbox]),select'); f && f.focus();
 }
+function closeModal() { const o = $('#overlay'); o && o.remove(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-/* ------------------------------------------------------------------ демо-данные (вне Telegram) */
-const demo = { user: null, bookings: [], slots: null };
-function demoSlots() {
-  const out = { Sergeli: {}, Yashnabod: {} };
-  const times = ['11:00', '11:30', '12:00', '12:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
-  const now = new Date();
-  for (let i = 1; i < 25; i++) {
-    const d = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate() + i, 12));
-    const wd = d.getUTCDay(), key = d.toISOString().slice(0, 10);
-    const br = Object.keys(DEFAULT_DAYS).find(b => DEFAULT_DAYS[b].includes(wd));
-    if (!br) continue;
-    const free = times.filter((_, j) => (j * 7 + i * 3) % 5 > 1);
-    if (i === 3) continue; // день без мест
-    out[br][key] = free;
-  }
-  return out;
+/* ======================================================== вход */
+function langSeg() {
+  return `<div class="seg">${['uz', 'ru'].map(l => `<button type="button" data-lang="${l}" class="${S.lang === l ? 'on' : ''}">${l.toUpperCase()}</button>`).join('')}</div>`;
 }
-async function demoApi(action, d) {
-  await new Promise(r => setTimeout(r, 350));
-  demo.slots = demo.slots || demoSlots();
-  const today = new Date().toISOString().slice(0, 10);
-  const pub = b => ({ ...b, canChange: today < b.day });
-  if (action === 'init') return {
-    user: demo.user, bookings: demo.bookings.filter(b => b.status === 'active').map(pub), slots: demo.slots, today,
-    config: { branchOrder: ['Sergeli', 'Yashnabod'], adminUsername: '', branches: {
-      Sergeli: { days: [1, 3, 5], address_uz: "Sergeli tumani (demo manzil)", address_ru: 'Сергелийский район (демо-адрес)', landmark_uz: '', landmark_ru: '', map: '' },
-      Yashnabod: { days: [2, 4, 6], address_uz: "Yashnobod tumani (demo manzil)", address_ru: 'Яшнабадский район (демо-адрес)', landmark_uz: '', landmark_ru: '', map: '' } } }
-  };
-  if (action === 'register') { demo.user = { name: d.name, phone: d.phone.replace(/\D/g, '').slice(-9), lang: d.lang }; return { user: demo.user }; }
-  if (action === 'setLang') return {};
-  if (action === 'book') {
-    const list = demo.slots[d.branch][d.day] || [];
-    if (!list.includes(d.time)) throw new Error('slot_taken');
-    demo.slots[d.branch][d.day] = list.filter(x => x !== d.time);
-    if (d.moveFrom) { const o = demo.bookings.find(b => b.id === d.moveFrom); o.status = 'moved'; (demo.slots[o.branch][o.day] = demo.slots[o.branch][o.day] || []).push(o.time); demo.slots[o.branch][o.day].sort(); }
-    const b = { id: 'd' + Date.now(), day: d.day, time: d.time, branch: d.branch, confirmed: false, status: 'active' };
-    demo.bookings.push(b);
-    return { booking: pub(b), slots: demo.slots };
-  }
-  if (action === 'cancel') { const b = demo.bookings.find(x => x.id === d.id); b.status = 'cancelled'; (demo.slots[b.branch][b.day] = demo.slots[b.branch][b.day] || []).push(b.time); demo.slots[b.branch][b.day].sort(); return { slots: demo.slots }; }
-  if (action === 'confirm') { demo.bookings.find(x => x.id === d.id).confirmed = true; return {}; }
-  return {};
-}
-
-/* ------------------------------------------------------------------ навигация */
-const PARENT = { branch: 'home', date: 'branch', time: 'date', register: 'time', confirm: 'time', done: 'home' };
-function go(screen) {
-  S.screen = screen;
-  render();
-  window.scrollTo(0, 0);
-}
-function back() {
-  haptic('sel');
-  let p = PARENT[S.screen] || 'home';
-  if (S.screen === 'confirm' && (!S.user || S.editing)) p = 'register';
-  if (p === 'home') S.moveFrom = null;
-  go(p);
-}
-
-function setBar(text, onClick, disabled) {
-  const bar = $('#bar'), b = $('#barBtn');
-  if (!text) { bar.hidden = true; b.onclick = null; return; }
-  bar.hidden = false; b.textContent = text; b.disabled = !!disabled || S.busy;
-  b.onclick = onClick;
-}
-
-/* ------------------------------------------------------------------ экраны */
-function render() {
-  document.documentElement.lang = S.lang;
-  document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('on', b.dataset.l === S.lang));
-  const isHome = S.screen === 'home' || S.screen === 'done';
-  $('#back').classList.toggle('show', !isHome);
-  if (inTg) { if (isHome) tg.BackButton.hide(); else tg.BackButton.show(); }
-  const titles = { branch: t('book'), date: t('book'), time: t('book'), register: t('yourData'), confirm: t('book') };
-  $('#topTitle').textContent = isHome ? '' : (S.moveFrom ? t('move') : titles[S.screen] || '');
-  setBar(null);
-  const html = SCREENS[S.screen]();
-  const app = $('#app');
-  app.innerHTML = (DEMO ? `<div class="demo">${t('demo')}</div>` : '') + `<div class="fade">${html}</div>`;
-  (AFTER[S.screen] || (() => {}))();
-}
-
-function steps(n) { return `<div class="steps">${[1, 2, 3, 4].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`; }
-
-function bookingCard(b) {
-  const actions = b.canChange
-    ? `<div class="actions">
-        ${b.confirmed ? '' : `<button class="btn primary full" data-act="coming" data-id="${b.id}">${I.check.replace('stroke-width="3"', 'stroke-width="3" width="18" height="18"')} ${t('coming')}</button>`}
-        <button class="btn" data-act="move" data-id="${b.id}">${t('move')}</button>
-        <button class="btn danger" data-act="cancel" data-id="${b.id}">${t('cancel')}</button>
-      </div>`
-    : `<div class="actions">${b.confirmed ? '' : `<button class="btn primary full" data-act="coming" data-id="${b.id}">${t('coming')}</button>`}</div>
-       <div class="note">${t('tooLate')}</div>`;
-  return `<div class="card">
-    <div class="bk-head"><span class="badge ${b.confirmed ? 'ok' : ''}">${b.confirmed ? '✓ ' + t('confirmed') : t('waiting')}</span>
-      <button class="badge" data-act="map" data-branch="${b.branch}">📍 ${esc(b.branch)}</button></div>
-    <div class="bk-date">${fmtLong(b.day)}</div>
-    <div class="bk-time"><b>${b.time}</b> · ${esc(branchName(b.branch))}</div>
-    ${addr(b.branch) ? `<div class="note" style="margin-top:6px">${esc(addr(b.branch))}</div>` : ''}
-    ${actions}
-  </div>`;
-}
-
-function weekdays(b) {
-  return [1, 2, 3, 4, 5, 6, 0].filter(d => branchDays(b).includes(d)).map(d => `<span>${t('days')[d]}</span>`).join('');
-}
-
-const SCREENS = {
-  home() {
-    const active = S.bookings[0];
-    return `
-      <div class="hero"><div class="logo"></div><div><h1>${t('clinic')}</h1><p>${t('doctor')}</p></div></div>
-      ${active ? `<div class="label">${t('myBooking')}</div>${bookingCard(active)}`
-        : `<button class="cta" data-act="book"><div class="ic">${I.cal}</div><div><b>${t('book')}</b><span>${t('bookSub')}</span></div><div class="arrow">${I.arrow}</div></button>`}
-      <div class="label">${t('addresses')}</div>
-      <div class="card list">
-        ${S.config.branchOrder.map(b => `
-          <button class="row" data-act="map" data-branch="${b}">
-            <div class="ri">${I.pin}</div>
-            <div><b>${esc(branchName(b))}</b><small>${esc(addr(b) || '—')}${landmark(b) ? ' · ' + esc(landmark(b)) : ''}</small>
-              <div class="days" style="margin-top:6px">${weekdays(b)}</div></div>
-            <div class="chev">${I.arrow}</div>
-          </button>`).join('')}
-      </div>
-      <div class="label">&nbsp;</div>
-      <div class="card list">
-        <button class="row" data-act="admin"><div class="ri">${I.chat}</div><div><b>${t('admin')}</b><small>${t('adminSub')}</small></div><div class="chev">${I.arrow}</div></button>
-      </div>`;
-  },
-
-  branch() {
-    return `${steps(1)}<h2>${t('chooseBranch')}</h2><p class="sub">${t('chooseBranchSub')}</p>
-      <div class="stack">${S.config.branchOrder.map(b => {
-        const days = Object.keys(S.slots[b] || {}).sort();
-        return `<button class="card branch ${S.branch === b ? 'sel' : ''}" data-act="pickBranch" data-branch="${b}">
-          <div class="bn"><b>${esc(b)}</b><div class="chev" style="width:18px;color:var(--muted)">${I.arrow}</div></div>
-          <div class="days">${weekdays(b)}</div>
-          <small>${esc(addr(b))}</small>
-          <small>${days.length ? `${t('nearest')}: <span class="near">${fmtLong(days[0])}</span>` : t('noPlaces')}</small>
-        </button>`;
-      }).join('')}</div>`;
-  },
-
-  date() {
-    const days = Object.keys(S.slots[S.branch] || {}).sort();
-    if (!days.length) return `${steps(2)}<h2>${t('chooseDate')}</h2><div class="card empty">${t('noPlaces')}</div>`;
-    let html = '', month = '';
-    days.forEach(day => {
-      const d = dObj(day), m = d.getUTCMonth();
-      const mt = T[S.lang].monthTitle((T[S.lang].monthsNom || T[S.lang].months)[m], d.getUTCFullYear());
-      if (mt !== month) { html += (month ? '</div>' : '') + `<div class="month">${mt}</div><div class="grid g3">`; month = mt; }
-      html += `<button class="chip ${S.day === day ? 'sel' : ''}" data-act="pickDate" data-day="${day}">
-        <div class="w">${t('days')[d.getUTCDay()]}</div><div class="d">${d.getUTCDate()}</div><div class="m">${t('monthsShort')[m]}</div></button>`;
-    });
-    return `${steps(2)}<h2>${t('chooseDate')}</h2><p class="sub">${esc(branchName(S.branch))}</p>${html}</div>`;
-  },
-
-  time() {
-    const times = (S.slots[S.branch] || {})[S.day] || [];
-    return `${steps(3)}<h2>${t('chooseTime')}</h2><p class="sub">${fmtLong(S.day)} · ${esc(S.branch)}</p>
-      ${times.length ? `<div class="grid g4">${times.map(tm => `<button class="chip ${S.time === tm ? 'sel' : ''}" data-act="pickTime" data-time="${tm}"><div class="t">${tm}</div></button>`).join('')}</div>`
-        : `<div class="card empty">${t('noSlotsDay')}</div>`}`;
-  },
-
-  register() {
-    const canContact = (inTg && tg.isVersionAtLeast('6.9')) || DEMO;
-    const manual = S.phoneMode === 'manual' || !canContact;
-    return `${steps(4)}<h2>${t('yourData')}</h2><p class="sub">${t('yourDataSub')}</p>
-      <label class="field"><span>${t('fullName')}</span><input class="input" id="regName" autocomplete="name" maxlength="60" placeholder="${esc(t('namePh'))}" value="${esc(S.regName)}"></label>
-      <div class="field"><span>${t('phone')}</span>
-        ${S.regPhone ? `<div class="phone-ok"><span style="color:var(--ok)">${I.check.replace('<svg', '<svg width="20" height="20"')}</span>${fmtPhone(S.regPhone)}
-            <button class="linkbtn" data-act="phoneReset" style="margin:0 0 0 auto">${t('changePhone')}</button></div>`
-          : manual ? `<div class="phone-in"><span>+998</span><input class="input" id="regPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="17" placeholder="90 123 45 67" value="${esc(S.phoneDraft || '')}"></div>
-            <div class="note">${t('manualHint')}</div>
-            ${canContact ? `<button class="linkbtn" data-act="phoneShare">${I.phone.replace('<svg', '<svg width="17" height="17"')} ${t('useShare')}</button>` : ''}`
-          : `<button class="btn full" data-act="share" style="min-height:52px">${I.phone.replace('<svg', '<svg width="20" height="20"')} ${t('sharePhone')}</button><div class="note">${t('shareHint')}</div>
-            <div class="or"><span>${t('or')}</span></div>
-            <button class="btn full" data-act="phoneManual" style="min-height:48px;background:var(--card);box-shadow:var(--shadow)">✏️ ${t('typePhone')}</button>`}
-      </div>`;
-  },
-
-  confirm() {
-    const old = S.moveFrom && S.bookings.find(b => b.id === S.moveFrom);
-    const u = S.user && !S.editing ? S.user : { name: S.regName, phone: S.regPhone };
-    const line = (k, v, s) => `<div class="line"><div class="k">${k}</div><div class="v">${v}${s ? `<small>${s}</small>` : ''}</div></div>`;
-    return `${steps(4)}<h2>${t('confirmTitle')}</h2><p class="sub">${t('confirmSub')}</p>
-      <div class="card sum">
-        ${old ? line(t('oldBooking'), `<s style="opacity:.6">${fmtShort(old.day)}, ${old.time}</s>`, esc(old.branch)) : ''}
-        ${line(t('branch'), esc(branchName(S.branch)), esc(addr(S.branch)))}
-        ${line(t('date'), fmtLong(S.day))}
-        ${line(t('time'), S.time)}
-        ${line(t('name'), esc(u.name), fmtPhone(u.phone))}
-      </div>
-      ${S.user ? `<button class="linkbtn" data-act="editData" style="margin:14px 4px 0">✏️ ${t('editData')}</button>` : ''}`;
-  },
-
-  done() {
-    const b = S.result;
-    return `<div class="done"><div class="tick">${I.check}</div>
-      <h2>${S.result.moved ? t('doneMoved') : t('doneTitle')}</h2><p class="sub">${t('doneSub')}</p></div>
-      <div class="card sum">
-        <div class="line"><div class="k">${t('date')}</div><div class="v">${fmtLong(b.day)}</div></div>
-        <div class="line"><div class="k">${t('time')}</div><div class="v">${b.time}</div></div>
-        <div class="line"><div class="k">${t('branch')}</div><div class="v">${esc(branchName(b.branch))}<small>${esc(addr(b.branch))}${landmark(b.branch) ? '<br>' + esc(landmark(b.branch)) : ''}</small></div></div>
-      </div>
-      <div class="actions"><button class="btn" data-act="map" data-branch="${b.branch}">${I.pin.replace('<svg', '<svg width="18" height="18"')} ${t('map')}</button>
-        <button class="btn" data-act="home">${t('home')}</button></div>`;
-  }
-};
-
-const AFTER = {
-  time() { if (S.time) setBar(t('next'), nextFromTime); },
-  register() {
-    const upd = () => setBar(t('next'), submitRegistration, ($('#regName').value.trim().length < 2) || !(S.regPhone || ($('#regPhone') && localPhone($('#regPhone').value))));
-    $('#regName').addEventListener('input', e => { S.regName = e.target.value; upd(); });
-    if ($('#regPhone')) $('#regPhone').addEventListener('input', e => { S.phoneDraft = e.target.value; upd(); });
-    upd();
-  },
-  confirm() { setBar(S.moveFrom ? t('confirmMove') : t('confirm'), doBook); },
-  done() { setBar(null); }
-};
-
-/* ------------------------------------------------------------------ действия */
-function startBooking() {
-  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null; S.editing = false;
-  go('branch');
-}
-function nextFromTime() {
-  go(S.user ? 'confirm' : 'register');
-}
-function submitRegistration() {
-  S.regName = $('#regName').value.trim().split(/\s+/).join(' ');
-  if ($('#regPhone')) S.regPhone = localPhone($('#regPhone').value);
-  go('confirm');
-}
-// «90 123 45 67», «+998 90 123-45-67», «998901234567» → «901234567»; иначе ''
-function localPhone(v) {
-  let d = String(v || '').replace(/\D/g, '');
-  if (d.length === 12 && d.startsWith('998')) d = d.slice(3);
-  return d.length === 9 ? d : '';
-}
-function sharePhone() {
-  if (DEMO) { S.regPhone = '901234567'; render(); return; }
-  tg.requestContact((ok, res) => {
-    if (ok && res && res.responseUnsafe && res.responseUnsafe.contact) {
-      S.regPhone = res.responseUnsafe.contact.phone_number; haptic('success'); render();
-    }
-  });
-}
-function askWriteAccess() {
-  return new Promise(res => {
-    if (!inTg || !tg.isVersionAtLeast('6.9')) return res();
-    try { tg.requestWriteAccess(() => res()); } catch (e) { res(); }
-  });
-}
-
-async function doBook() {
-  if (S.busy) return;
-  S.busy = true; setBar(S.moveFrom ? t('confirmMove') : t('confirm'), null, true); $('#barBtn').innerHTML = '<div class="spin" style="width:22px;height:22px;border-width:2.5px"></div>';
-  try {
-    if (!S.user || S.editing) {
-      const r = await api('register', { name: S.regName, phone: S.regPhone, lang: S.lang });
-      S.user = r.user; S.editing = false;
-    }
-    await askWriteAccess();
-    const moved = !!S.moveFrom;
-    const r = await api('book', { branch: S.branch, day: S.day, time: S.time, moveFrom: S.moveFrom || undefined });
-    S.slots = r.slots; S.bookings = [r.booking]; S.moveFrom = null; S.user.lastBranch = S.branch;
-    S.result = { ...r.booking, moved };
-    haptic('success');
-    S.busy = false; go('done');
-  } catch (e) {
-    // запись могла пройти, а ответ потеряться — проверяем
-    if (!['slot_taken', 'too_late', 'limit', 'changed_by_admin', 'need_registration'].includes(e.message)) {
-      try {
-        const want = { day: S.day, time: S.time, branch: S.branch }, moved = !!S.moveFrom;
-        await refresh();
-        const b = S.bookings.find(x => x.day === want.day && x.time === want.time && x.branch === want.branch);
-        if (b) { S.moveFrom = null; S.result = { ...b, moved }; haptic('success'); S.busy = false; go('done'); return; }
-      } catch (_) {}
-    }
-    S.busy = false; haptic('error'); toast(errText(e));
-    if (e.message === 'slot_taken') {
-      try { S.slots = (await api('slots')).slots; } catch (_) {}
-      S.time = null; go('time');
-    } else render();
-  }
-}
-
-async function refresh() {
-  const r = await api('init');
-  S.user = r.user; S.config = r.config; S.bookings = r.bookings; S.slots = r.slots; S.today = r.today;
-  if (r.user && r.user.lang) S.lang = r.user.lang;
-}
-
-document.addEventListener('click', async e => {
-  const el = e.target.closest('[data-act]');
-  if (!el || S.busy) return;
-  const a = el.dataset.act;
-  if (a === 'book') { haptic('sel'); startBooking(); }
-  else if (a === 'home') { S.moveFrom = null; go('home'); }
-  else if (a === 'pickBranch') { haptic('sel'); S.branch = el.dataset.branch; S.day = null; S.time = null; go('date'); }
-  else if (a === 'pickDate') {
-    haptic('sel'); S.day = el.dataset.day; S.time = null;
-    if (!((S.slots[S.branch] || {})[S.day] || []).length) { toast(t('noSlotsDay')); return; }
-    go('time');
-  }
-  else if (a === 'pickTime') {
-    haptic('sel'); S.time = el.dataset.time;
-    document.querySelectorAll('[data-act="pickTime"]').forEach(x => x.classList.toggle('sel', x === el));
-    setBar(t('next'), nextFromTime);
-  }
-  else if (a === 'share') sharePhone();
-  else if (a === 'phoneManual') { haptic('sel'); S.phoneMode = 'manual'; render(); const p = $('#regPhone'); p && p.focus(); }
-  else if (a === 'phoneShare') { haptic('sel'); S.phoneMode = 'share'; render(); }
-  else if (a === 'editData') {
-    haptic('sel'); S.editing = true; S.regName = S.user.name; S.regPhone = S.user.phone; S.phoneDraft = ''; S.phoneMode = null;
-    go('register');
-  }
-  else if (a === 'phoneReset') { haptic('sel'); S.regPhone = ''; S.phoneDraft = ''; S.phoneMode = null; render(); }
-  else if (a === 'map') {
-    const url = branchInfo(el.dataset.branch).map;
-    if (!url) { toast(addr(el.dataset.branch) || '—'); return; }
-    inTg ? tg.openLink(url) : window.open(url, '_blank');
-  }
-  else if (a === 'admin') {
-    const u = S.config.adminUsername;
-    if (!u) { toast('—'); return; }
-    inTg ? tg.openTelegramLink('https://t.me/' + u) : window.open('https://t.me/' + u, '_blank');
-  }
-  else if (a === 'coming') {
-    S.busy = true;
-    try { await api('confirm', { id: el.dataset.id }); S.bookings.forEach(b => { if (b.id === el.dataset.id) b.confirmed = true; }); haptic('success'); toast(t('thanks')); }
-    catch (err) { toast(errText(err)); }
-    S.busy = false; render();
-  }
-  else if (a === 'move') { S.moveFrom = el.dataset.id; const b = S.bookings.find(x => x.id === S.moveFrom); S.branch = b.branch; S.day = null; S.time = null; go('branch'); }
-  else if (a === 'cancel') {
-    if (!(await confirmDialog(t('askCancel')))) return;
-    S.busy = true; render();
-    try { const r = await api('cancel', { id: el.dataset.id }); S.slots = r.slots; S.bookings = S.bookings.filter(b => b.id !== el.dataset.id); haptic('success'); toast(t('cancelled')); }
-    catch (err) { haptic('error'); toast(errText(err)); if (err.message === 'changed_by_admin') S.bookings = S.bookings.filter(b => b.id !== el.dataset.id); }
-    S.busy = false; render();
-  }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-lang]');
+  if (!b) return;
+  S.lang = b.dataset.lang; store.set('bc_lang', S.lang);
+  S.admin ? renderShell() : renderLogin();
 });
+function renderLogin(err) {
+  $('#root').innerHTML = `<div class="login"><form class="login-card" id="lf">
+      <div class="logo"></div><h1>Breket Center</h1><p>${t('title')}</p>
+      <div class="stack">
+        <label class="f"><span>${t('login')}</span><input class="input" name="login" autocomplete="username" required></label>
+        <label class="f"><span>${t('password')}</span><input class="input" name="password" type="password" autocomplete="current-password" required></label>
+        ${err ? `<div class="badge no" style="display:block;padding:9px 12px;border-radius:10px;white-space:normal">${esc(err)}</div>` : ''}
+        <button class="btn primary" style="width:100%;min-height:46px">${t('signIn')}</button>
+        <div style="text-align:center">${langSeg()}</div>
+      </div></form></div>`;
+  $('#lf').onsubmit = async e => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    e.target.querySelector('button.primary').disabled = true;
+    try {
+      const r = await api('login', { login: fd.get('login'), password: fd.get('password') });
+      S.token = r.token; store.set('bc_token', r.token);
+      await boot();
+    } catch (er) { renderLogin(errMsg(er)); }
+  };
+}
+function logout(silent) {
+  if (!silent && S.token) api('logout').catch(() => {});
+  S.token = null; store.set('bc_token', null); S.admin = null;
+  closeModal(); renderLogin();
+}
 
-$('#back').addEventListener('click', back);
-document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
-  if (S.lang === b.dataset.l) return;
-  S.lang = b.dataset.l; haptic('sel'); render();
-  if (S.user) api('setLang', { lang: S.lang }).catch(() => {});
-}));
+/* ======================================================== каркас */
+const PAGES = ['schedule', 'broadcast', 'stats', 'users', 'settings', 'admins'];
+const PAGE_ICON = { schedule: IC.cal, broadcast: IC.mega, stats: IC.chart, users: IC.users, settings: IC.gear, admins: IC.shield };
+function renderShell() {
+  document.documentElement.lang = S.lang;
+  $('#root').innerHTML = `<div class="shell">
+    <aside class="side">
+      <div class="brand"><div class="logo"></div><div><b>Breket Center</b><small>${t('title')}</small></div></div>
+      ${PAGES.map(p => `<button class="nav ${S.page === p ? 'on' : ''}" data-page="${p}">${PAGE_ICON[p]}<span>${t('nav.' + p)}</span></button>`).join('')}
+      <div class="side-foot">
+        <div class="who">${esc(S.admin.name)}<small>${esc(S.admin.login)} · ${S.admin.role === 'owner' ? t('owner') : t('adminRole')}</small></div>
+        ${langSeg()}
+        <button class="btn ghost sm" id="logoutBtn" style="justify-content:flex-start;padding-left:0">${IC.out} ${t('signOut')}</button>
+      </div>
+    </aside>
+    <main class="main" id="main"></main></div>`;
+  document.querySelectorAll('[data-page]').forEach(b => b.onclick = () => { S.page = b.dataset.page; location.hash = S.page; renderShell(); });
+  $('#logoutBtn').onclick = () => logout();
+  ({ schedule: pageSchedule, broadcast: pageBroadcast, stats: pageStats, users: pageUsers, settings: pageSettings, admins: pageAdmins })[S.page]();
+}
+function head(title, right = '') {
+  return `<div class="head"><h1>${title}</h1>${right}
+    <span class="mob-only">${langSeg()}</span>
+    <button class="btn sm mob-only" onclick="logout()">${IC.out}</button></div>`;
+}
 
-/* ------------------------------------------------------------------ старт */
-(async function start() {
-  if (inTg) {
-    tg.ready(); tg.expand();
-    document.documentElement.dataset.theme = tg.colorScheme;
-    try { tg.setHeaderColor(tg.colorScheme === 'dark' ? '#0E1617' : '#F3F7F7'); tg.setBackgroundColor(tg.colorScheme === 'dark' ? '#0E1617' : '#F3F7F7'); } catch (e) {}
-    tg.BackButton.onClick(back);
-    tg.onEvent('themeChanged', () => { document.documentElement.dataset.theme = tg.colorScheme; });
-    const lc = (tg.initDataUnsafe.user || {}).language_code || '';
-    S.lang = lc.startsWith('ru') ? 'ru' : 'uz';
-  } else {
-    S.lang = (navigator.language || '').startsWith('ru') ? 'ru' : 'uz';
+/* ======================================================== расписание */
+async function pageSchedule() {
+  S.day = S.day || S.today;
+  $('#main').innerHTML = head(t('nav.schedule'), `
+    <div class="datebar">
+      <button class="btn sm" id="prevD">${IC.left}</button>
+      <input class="input" type="date" id="dayIn" value="${S.day}">
+      <button class="btn sm" id="nextD">${IC.right}</button>
+      <button class="btn sm" id="todayD">${t('today')}</button>
+      <button class="btn primary" id="addB">${IC.plus} ${t('add')}</button>
+    </div>`) + `<div class="strip" id="strip"></div><div id="dayBox"><div class="spin"></div></div>`;
+  $('#prevD').onclick = () => setDay(addDays(S.day, -1));
+  $('#nextD').onclick = () => setDay(addDays(S.day, 1));
+  $('#todayD').onclick = () => setDay(S.today);
+  $('#dayIn').onchange = e => e.target.value && setDay(e.target.value);
+  $('#addB').onclick = () => bookingModal({ day: S.day, branch: firstBranch() });
+  await Promise.all([loadStrip(), loadDay()]);
+}
+function firstBranch() {
+  const d = S.dayData;
+  if (d) for (const b of S.branchOrder) if (d.branches[b].rows.length) return b;
+  return S.branchOrder[0];
+}
+async function setDay(day) {
+  S.day = day;
+  if ($('#dayIn')) $('#dayIn').value = day;
+  const inStrip = S.overview && S.overview.some(x => x.day === day);
+  await Promise.all([inStrip ? Promise.resolve(drawStrip()) : loadStrip(), loadDay()]);
+}
+async function loadStrip() {
+  try { S.overview = (await api('overview', { from: addDays(S.day, -3), days: 21 })).days; drawStrip(); } catch (e) { toast(errMsg(e), true); }
+}
+function drawStrip() {
+  const el = $('#strip'); if (!el) return;
+  el.innerHTML = S.overview.map(x => {
+    const br = Object.values(x.branches), booked = br.reduce((a, b) => a + b.booked, 0), total = br.reduce((a, b) => a + b.booked + b.free, 0);
+    return `<button class="day ${x.day === S.day ? 'on' : ''} ${x.day === S.today ? 'today' : ''} ${br.length ? '' : 'off'}" data-day="${x.day}">
+      <div class="w">${t('days')[wd(x.day)]}</div><div class="d">${+x.day.slice(8)}</div><div class="c">${br.length ? booked + '/' + total : ''}</div></button>`;
+  }).join('');
+  el.querySelectorAll('[data-day]').forEach(b => b.onclick = () => setDay(b.dataset.day));
+  const on = el.querySelector('.on'); on && on.scrollIntoView({ inline: 'center', block: 'nearest' });
+}
+async function loadDay() {
+  const box = $('#dayBox'); if (!box) return;
+  try { S.dayData = await api('day', { day: S.day }); drawDay(); } catch (e) { box.innerHTML = `<div class="card empty">${esc(errMsg(e))}</div>`; }
+}
+async function reloadDay() { await Promise.all([loadDay(), loadStrip()]); }
+
+function drawDay() {
+  const d = S.dayData, box = $('#dayBox');
+  if (!box || d.day !== S.day) return;
+  if (!d.sheet) { box.innerHTML = `<div class="card closed">${fmtDay(d.day)} — ${t('noSheet')}</div>`; return; }
+  const shown = S.branchOrder.filter(b => d.branches[b].rows.length);
+  if (!shown.length) { box.innerHTML = `<div class="card closed">${fmtDay(d.day)} — ${t('noAct')}</div>`; return; }
+  box.innerHTML = `<div class="cols">${shown.map(b => branchCard(b, d.branches[b].rows)).join('')}</div>`;
+  bindDay();
+}
+
+function rowHtml(b, r) {
+  const past = S.day < S.today;
+  if (!r.name) {
+    if (r.busyBy) return `<div class="slot busy"><div class="tm">${r.time}</div><div><div class="nm">${t('busy')}: ${esc(r.busyBy.join(', '))}</div></div><div></div></div>`;
+    return `<div class="slot free"><div class="tm">${r.time}</div><div class="nm">${t('free')}</div>
+      <div class="acts">${past ? '' : `<button class="btn sm" data-a="add" data-branch="${esc(b)}" data-time="${r.time}">${IC.plus} ${t('add')}</button>`}</div></div>`;
   }
+  const no = /кемиди|келмади|kelmadi|не приш/i.test(r.status || '');
+  const cls = r.keldi ? 'keldi' : (no ? 'noshow' : '');
+  const meta = [
+    r.bot ? `<span class="badge bot">${t('bot')}</span>` : '',
+    r.bot && r.bot.confirmed ? `<span class="badge ok">✓ ${t('kelaman')}</span>` : '',
+    r.keldi ? `<span class="badge ok">${t('keldi')}</span>` : '',
+    r.channel ? `<span class="badge">${esc(r.channel)}</span>` : '',
+    r.status ? `<span class="badge ${no ? 'no' : ''}">${esc(r.status)}</span>` : ''
+  ].join('');
+  return `<div class="slot ${cls}">
+    <div class="tm">${r.time}</div>
+    <div><div class="nm">${esc(r.name)}</div>${r.phone ? `<div class="ph"><a href="tel:+998${esc(r.phone)}">${fmtPhone(r.phone)}</a></div>` : ''}
+      <div class="meta">${meta}</div>${r.izoh ? `<div class="note">${esc(r.izoh)}</div>` : ''}</div>
+    <div class="acts">
+      <button class="ib ${r.keldi ? 'on' : 'ok'}" title="${t('markCame')}" data-a="keldi" data-row="${r.row}">${IC.check}</button>
+      <button class="ib" title="${t('edit')}" data-a="edit" data-row="${r.row}">${IC.edit}</button>
+      ${past ? '' : `<button class="ib" title="${t('move')}" data-a="move" data-row="${r.row}">${IC.move}</button>`}
+      <button class="ib no" title="${t('cancel')}" data-a="cancel" data-row="${r.row}">${IC.x}</button>
+    </div></div>`;
+}
+function branchCard(b, rows) {
+  const booked = rows.filter(r => r.name).length, free = rows.filter(r => !r.name && !r.busyBy).length;
+  return `<section class="card">
+    <div class="bcard-h"><b>${esc(b)}</b><span class="badge">${booked} ${t('booked')}</span><span class="badge bot">${free} ${t('freeN')}</span></div>
+    ${rows.map(r => rowHtml(b, r)).join('')}</section>`;
+}
+function findRow(row) {
+  for (const b of S.branchOrder) { const r = S.dayData.branches[b].rows.find(x => x.row === +row); if (r) return { ...r, branch: b }; }
+  return null;
+}
+function bindDay() {
+  $('#dayBox').querySelectorAll('[data-a]').forEach(el => el.onclick = async () => {
+    const a = el.dataset.a, r = el.dataset.row ? findRow(el.dataset.row) : null;
+    try {
+      if (a === 'add') return bookingModal({ day: S.day, branch: el.dataset.branch, time: el.dataset.time });
+      if (a === 'edit') return editModal(r);
+      if (a === 'move') return moveModal(r);
+      if (a === 'keldi') { el.disabled = true; await api('setKeldi', { row: r.row, day: S.day, value: !r.keldi }); toast(r.keldi ? t('done') : t('keldi')); }
+      if (a === 'cancel') {
+        if (!confirm(t('askCancel') + '\n\n' + r.name + ' · ' + r.time)) return;
+        await api('cancelBooking', { row: r.row, day: S.day, name: r.name, notify: true });
+        toast(t('done'));
+      }
+      await reloadDay();
+    } catch (e) { toast(errMsg(e), true); if (e.message === 'row_changed') reloadDay(); }
+  });
+}
+
+/* ------------------------------------------------ окна записи */
+function timesSelect(sel, branch, day, keep) {
+  sel.innerHTML = '<option>…</option>';
+  return api('freeTimes', { branch, day }).then(r => {
+    const times = r.times.slice();
+    if (keep && !times.includes(keep)) times.unshift(keep);
+    sel.innerHTML = times.length ? times.map(x => `<option ${x === keep ? 'selected' : ''}>${x}</option>`).join('') : `<option value="">${t('noFree')}</option>`;
+  }).catch(e => { sel.innerHTML = `<option value="">${esc(errMsg(e))}</option>`; });
+}
+const kanalOptions = cur => `<option value="">—</option>` + S.kanal.map(k => `<option ${k === cur ? 'selected' : ''}>${esc(k)}</option>`).join('')
+  + (cur && !S.kanal.includes(cur) ? `<option selected>${esc(cur)}</option>` : '');
+
+function bookingModal(bk) {
+  modal(`<h2>${t('newBooking')}</h2>
+    <form id="bf" class="stack">
+      <label class="f"><span>${t('name')}</span><input class="input" name="name" required minlength="2" maxlength="60"></label>
+      <label class="f"><span>${t('phone')}</span><input class="input" name="phone" required inputmode="tel" placeholder="90 123 45 67"></label>
+      <div class="grid2">
+        <label class="f"><span>${t('branch')}</span><select class="input" name="branch">${S.branchOrder.map(b => `<option ${b === bk.branch ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>
+        <label class="f"><span>${t('date')}</span><input class="input" type="date" name="day" required value="${bk.day}"></label>
+      </div>
+      <div class="grid2">
+        <label class="f"><span>${t('time')}</span><select class="input" name="time"></select></label>
+        ${S.kanal.length ? `<label class="f"><span>${t('kanal')}</span><select class="input" name="channel">${kanalOptions('')}</select></label>` : ''}
+      </div>
+      <label class="f"><span>${t('izoh')}</span><input class="input" name="izoh" maxlength="300"></label>
+      <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('save')}</button></div>
+    </form>`, o => {
+    const f = o.querySelector('#bf');
+    const load = () => timesSelect(f.time, f.branch.value, f.day.value, bk.time);
+    f.branch.onchange = load; f.day.onchange = load; load();
+    f.onsubmit = async e => {
+      e.preventDefault();
+      if (!f.time.value) return toast(t('noFree'), true);
+      const btn = f.querySelector('.btn.primary'); btn.disabled = true;
+      try {
+        const r = await api('addBooking', { name: f.name.value, phone: f.phone.value, branch: f.branch.value, day: f.day.value, time: f.time.value,
+          izoh: f.izoh.value, channel: f.channel ? f.channel.value : '' });
+        closeModal(); toast(r.linked ? t('linked') : t('saved'));
+        S.day = f.day.value; if ($('#dayIn')) $('#dayIn').value = S.day;
+        await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'slot_taken') load(); }
+    };
+  });
+}
+
+function editModal(r) {
+  modal(`<h2>${t('editBooking')} · ${r.time}</h2>
+    <form id="ef" class="stack">
+      <label class="f"><span>${t('name')}</span><input class="input" name="name" required minlength="2" value="${esc(r.name)}"></label>
+      <label class="f"><span>${t('phone')}</span><input class="input" name="phone" value="${r.phone ? fmtPhone(r.phone) : ''}"></label>
+      ${S.kanal.length ? `<label class="f"><span>${t('kanal')}</span><select class="input" name="channel">${kanalOptions(r.channel)}</select></label>` : ''}
+      <label class="f"><span>${t('izoh')}</span><input class="input" name="izoh" maxlength="300" value="${esc(r.izoh)}"></label>
+      <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('save')}</button></div>
+    </form>`, o => {
+    const f = o.querySelector('#ef');
+    f.onsubmit = async e => {
+      e.preventDefault();
+      const btn = f.querySelector('.btn.primary'); btn.disabled = true;
+      try {
+        await api('updateRow', { row: r.row, day: S.day, oldName: r.name, name: f.name.value, phone: f.phone.value, izoh: f.izoh.value,
+          channel: f.channel ? f.channel.value : undefined });
+        closeModal(); toast(t('saved')); await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'row_changed') { closeModal(); reloadDay(); } }
+    };
+  });
+}
+
+function moveModal(r) {
+  modal(`<h2>${t('moveBooking')}</h2>
+    <p class="muted" style="margin:-8px 0 14px;font-weight:600">${esc(r.name)} · ${dm(S.day)} ${r.time} · ${esc(r.branch)}</p>
+    <form id="mf" class="stack">
+      <div class="grid2">
+        <label class="f"><span>${t('branch')}</span><select class="input" name="branch">${S.branchOrder.map(b => `<option ${b === r.branch ? 'selected' : ''}>${esc(b)}</option>`).join('')}</select></label>
+        <label class="f"><span>${t('date')}</span><input class="input" type="date" name="day" required value="${S.day}"></label>
+      </div>
+      <label class="f"><span>${t('time')}</span><select class="input" name="time"></select></label>
+      ${r.bot ? `<label class="check"><input type="checkbox" name="notify" checked> ${t('notify')}</label>` : ''}
+      <div class="row"><button type="button" class="btn" onclick="closeModal()">${t('close')}</button><button class="btn primary">${t('move')}</button></div>
+    </form>`, o => {
+    const f = o.querySelector('#mf');
+    const load = () => timesSelect(f.time, f.branch.value, f.day.value);
+    f.branch.onchange = load; f.day.onchange = load; load();
+    f.onsubmit = async e => {
+      e.preventDefault();
+      if (!f.time.value) return toast(t('noFree'), true);
+      const btn = f.querySelector('.btn.primary'); btn.disabled = true;
+      try {
+        await api('moveBooking', { row: r.row, fromDay: S.day, name: r.name, branch: f.branch.value, day: f.day.value, time: f.time.value,
+          notify: f.notify ? f.notify.checked : false });
+        closeModal(); toast(t('done'));
+        S.day = f.day.value; if ($('#dayIn')) $('#dayIn').value = S.day;
+        await reloadDay();
+      } catch (er) { btn.disabled = false; toast(errMsg(er), true); if (er.message === 'slot_taken') load(); if (er.message === 'row_changed') { closeModal(); reloadDay(); } }
+    };
+  });
+}
+
+/* ======================================================== рассылка */
+async function pageBroadcast() {
+  $('#main').innerHTML = head(t('nav.broadcast')) + `<div class="grid2" style="align-items:start">
+    <form class="card pad stack" id="bcf">
+      <h3 style="margin:0">${t('bcTitle')}</h3>
+      <div class="muted" style="font-size:13px;font-weight:600">${t('bcHint')}</div>
+      <label class="f"><span>${t('bcUz')}</span><textarea class="input" name="uz" maxlength="3500"></textarea></label>
+      <label class="f"><span>${t('bcRu')}</span><textarea class="input" name="ru" maxlength="3500"></textarea></label>
+      <label class="f"><span>${t('bcWho')}</span><select class="input" name="branch" id="bcWho"><option value="all">${t('bcAll')}</option>${S.branchOrder.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('')}</select></label>
+      <label class="check"><input type="checkbox" name="btn" checked> ${t('bcBtn')}</label>
+      <button class="btn primary" style="min-height:46px">${IC.send} ${t('bcSend')}</button>
+      <div id="bcRes"></div>
+    </form>
+    <div class="card pad"><h3>${t('bcPreview')}</h3><div id="bcPrev"></div></div></div>`;
+  let counts = {};
+  const f = $('#bcf');
+  const upd = () => {
+    const txt = (S.lang === 'ru' ? (f.ru.value || f.uz.value) : (f.uz.value || f.ru.value)) || '…';
+    $('#bcPrev').innerHTML = `<div class="bubble">${esc(txt)}${f.btn.checked ? `<div class="bbtn">📅 ${S.lang === 'ru' ? 'Записаться' : 'Yozilish'}</div>` : ''}</div>
+      <div class="muted" style="margin-top:12px;font-weight:700">${counts[f.branch.value] ?? '…'} ${t('people')}</div>`;
+  };
+  f.oninput = upd; f.onchange = upd; upd();
+  try { counts = (await api('audience')).counts; upd(); } catch (e) { toast(errMsg(e), true); }
+  f.onsubmit = async e => {
+    e.preventDefault();
+    if (!f.uz.value.trim() && !f.ru.value.trim()) return;
+    const n = counts[f.branch.value] ?? '?';
+    if (!confirm(t('bcAsk')(n))) return;
+    const btn = f.querySelector('.btn.primary'); btn.disabled = true; btn.innerHTML = '<div class="spin" style="width:20px;height:20px;margin:0;border-width:2.5px"></div>';
+    try {
+      const r = await api('broadcast', { textUz: f.uz.value, textRu: f.ru.value, branch: f.branch.value, withButton: f.btn.checked });
+      $('#bcRes').innerHTML = `<div class="badge ok" style="display:block;padding:10px 12px;border-radius:10px">${t('bcDone')(r.sent, r.total)}${r.blocked ? ` · ${t('blocked')}: ${r.blocked}` : ''}</div>`;
+      f.uz.value = ''; f.ru.value = ''; upd();
+    } catch (er) { toast(errMsg(er), true); }
+    btn.disabled = false; btn.innerHTML = `${IC.send} ${t('bcSend')}`;
+  };
+}
+
+/* ======================================================== статистика */
+function statsRange() {
+  const td = S.today;
+  if (S.statsRange === 'week') return [addDays(td, -6), td];
+  if (S.statsRange === 'month') return [addDays(td, -29), td];
+  if (S.statsRange === 'thisMonth') return [td.slice(0, 8) + '01', td];
+  if (S.statsRange === 'next') return [td, addDays(td, 29)];
+  return [S.statsFrom || addDays(td, -6), S.statsTo || td];
+}
+async function pageStats() {
+  const [from, to] = statsRange();
+  $('#main').innerHTML = head(t('nav.stats'), `
+    <div class="seg">${['week', 'month', 'thisMonth', 'next'].map(k => `<button data-r="${k}" class="${S.statsRange === k ? 'on' : ''}">${t('period.' + k)}</button>`).join('')}</div>
+    <div class="datebar"><input class="input" type="date" id="sf" value="${from}"> <input class="input" type="date" id="st" value="${to}"></div>
+    <button class="btn" id="csv">${IC.dl} ${t('export')}</button>`) + '<div id="sbox"><div class="spin"></div></div>';
+  document.querySelectorAll('[data-r]').forEach(b => b.onclick = () => { S.statsRange = b.dataset.r; pageStats(); });
+  const custom = () => { S.statsRange = 'custom'; S.statsFrom = $('#sf').value; S.statsTo = $('#st').value; pageStats(); };
+  $('#sf').onchange = custom; $('#st').onchange = custom;
+  $('#csv').onclick = () => exportCsv(from, to);
   try {
-    await refresh();
-    render();
-  } catch (e) {
-    $('#app').innerHTML = `<div class="hero"><div class="logo"></div><div><h1>Breket Center</h1><p>${t('doctor')}</p></div></div>
-      <div class="card empty">${t('error')}<br><small>${esc(e.message)}</small><br><br><button class="btn primary" onclick="location.reload()">↻</button></div>`;
-  }
-})();
+    const r = await api('stats', { from, to });
+    const rate = r.came ? Math.round(100 * r.came / (r.came + r.noshow + r.unmarked)) + '%' : '—';
+    const days = []; for (let d = from; d <= to; d = addDays(d, 1)) days.push(d);
+    const max = Math.max(1, ...days.map(d => (r.byDay[d] || {}).total || 0));
+    $('#sbox').innerHTML = `
+      <div class="kpis">${[['total', r.total], ['came', r.came], ['noshow', r.noshow], ['unmarked', r.unmarked], ['upcoming', r.upcoming], ['rate', rate], ['free', r.free]]
+        .map(([k, n]) => `<div class="card kpi"><small>${t('k.' + k)}</small><b>${n}</b></div>`).join('')}</div>
+      <div class="grid3" style="margin-bottom:16px">
+        <div class="card pad"><h3>${t('botStats')}</h3>${Object.entries(r.bot).filter(([k]) => k !== 'fromBotRows').map(([k, n]) => `<div class="kv"><span>${t('botK.' + k)}</span><b>${n}</b></div>`).join('')}</div>
+        <div class="card pad"><h3>${t('byKanal')}</h3>${Object.entries(r.kanal).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<div class="kv"><span>${esc(k)}</span><b>${n}</b></div>`).join('') || '—'}</div>
+        <div class="card pad"><h3>${t('byBranch')}</h3>${Object.entries(r.branches).map(([b, x]) => `<div class="kv"><b>${esc(b)}</b><span>${x.total} · <span class="badge ok">${x.came}</span> <span class="badge no">${x.noshow}</span></span></div>`).join('')}</div>
+      </div>
+      <div class="card"><div class="pad" style="padding-bottom:0"><h3>${t('byDay')}</h3></div>
+        <div class="bars">${days.map(d => { const x = r.byDay[d] || { total: 0, came: 0, noshow: 0 }; const p = x.total - x.came - x.noshow;
+          return `<div class="bar" style="height:${Math.max(100 * x.total / max, 2)}%" title="${dm(d)}: ${x.total}">${x.total ? `<i class="c" style="height:${100 * x.came / x.total}%"></i><i class="n" style="height:${100 * x.noshow / x.total}%"></i><i class="p" style="height:${100 * p / x.total}%"></i>` : ''}</div>`; }).join('')}</div>
+        <div class="bar-l">${days.map((d, i) => `<span>${days.length <= 14 || i % Math.ceil(days.length / 10) === 0 ? +d.slice(8) : ''}</span>`).join('')}</div>
+        <div class="legend"><span><i style="background:var(--ok)"></i>${t('k.came')}</span><span><i style="background:var(--danger)"></i>${t('k.noshow')}</span><span><i style="background:var(--brand)"></i>${t('k.upcoming')} / ${t('k.unmarked')}</span></div>
+      </div>`;
+  } catch (e) { $('#sbox').innerHTML = `<div class="card empty">${esc(errMsg(e))}</div>`; }
+}
+async function exportCsv(from, to) {
+  try {
+    const r = await api('rows', { from, to });
+    const headRow = [t('date'), t('time'), t('branch'), t('name'), t('phone'), 'Keldi', 'Kanal', 'Status', t('izoh'), 'Operator', 'Gaplashilgan sana', 'Bot'];
+    const q = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+    const rows = r.rows.map(b => [dm(b.day) + '.' + b.day.slice(0, 4), b.time, b.branch, b.name, b.phone ? '+998' + b.phone : '', b.keldi ? '✓' : '', b.channel, b.status, b.izoh, b.operator, b.bookedOn, b.bot ? '✓' : '']);
+    const csv = '﻿' + [headRow, ...rows].map(x => x.map(q).join(';')).join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = `breket_${from}_${to}.csv`; a.click();
+  } catch (e) { toast(errMsg(e), true); }
+}
+
+/* ======================================================== пациенты бота */
+async function pageUsers() {
+  $('#main').innerHTML = head(t('nav.users')) + `
+    <div style="margin-bottom:14px"><input class="input" id="uq" placeholder="${t('search')}" style="max-width:420px"></div>
+    <div class="card" id="ulist"><div class="spin"></div></div>`;
+  let timer;
+  $('#uq').oninput = e => { clearTimeout(timer); timer = setTimeout(() => loadUsers(e.target.value), 300); };
+  loadUsers('');
+}
+async function loadUsers(q) {
+  try {
+    const r = await api('users', { q });
+    const box = $('#ulist'); if (!box) return;
+    box.innerHTML = r.users.length ? `<div class="scroll-x"><table class="table">
+      <thead><tr><th>${t('name')}</th><th>${t('phone')}</th><th class="hide-m">${t('lang')}</th><th class="hide-m">${t('branch')}</th><th>${t('activeB')}</th></tr></thead>
+      <tbody>${r.users.map(u => `<tr><td><b>${esc(u.name)}</b>${u.blocked ? ` <span class="badge no">${t('blocked')}</span>` : ''}</td><td>${fmtPhone(u.phone)}</td>
+        <td class="hide-m">${u.lang.toUpperCase()}</td><td class="hide-m">${esc(u.branch) || '—'}</td>
+        <td>${u.active ? `<span class="badge bot">${dm(u.active.day)} ${u.active.time} · ${esc(u.active.branch)}</span>` : '<span class="muted">—</span>'}</td></tr>`).join('')}</tbody></table></div>
+      <div class="muted" style="padding:10px 14px;font-weight:700">${t('total')}: ${r.total}</div>`
+      : '<div class="empty">—</div>';
+  } catch (e) { toast(errMsg(e), true); }
+}
+
+/* ======================================================== настройки */
+function pageSettings() {
+  const s = S.settings;
+  const kanalSel = `<select class="input" name="channel"><option value="" ${!s.channel ? 'selected' : ''}>${t('empty')}</option>
+    ${S.kanal.map(k => `<option ${k === s.channel ? 'selected' : ''}>${esc(k)}</option>`).join('')}
+    ${s.channel && !S.kanal.includes(s.channel) ? `<option selected>${esc(s.channel)}</option>` : ''}</select>`;
+  $('#main').innerHTML = head(t('nav.settings')) + `<form id="sform">
+    <h3 style="margin:0 0 12px">${t('addresses')}</h3>
+    ${S.branchOrder.map(b => { const x = s.branches[b] || {}; return `<div class="card pad sect" data-branch="${esc(b)}"><h3>${esc(b)}</h3>
+      <div class="grid2">
+        <label class="f"><span>${t('addrUz')}</span><input class="input" name="address_uz" value="${esc(x.address_uz)}"></label>
+        <label class="f"><span>${t('addrRu')}</span><input class="input" name="address_ru" value="${esc(x.address_ru)}"></label>
+        <label class="f"><span>${t('lmUz')}</span><input class="input" name="landmark_uz" value="${esc(x.landmark_uz)}"></label>
+        <label class="f"><span>${t('lmRu')}</span><input class="input" name="landmark_ru" value="${esc(x.landmark_ru)}"></label>
+      </div>
+      <label class="f" style="margin-top:12px"><span>${t('map')}</span><input class="input" name="map" value="${esc(x.map)}" placeholder="https://maps.app.goo.gl/..."></label>
+    </div>`; }).join('')}
+    <div class="card pad sect"><h3>${t('general')}</h3><div class="grid2">
+      <label class="f"><span>${t('adminUser')}</span><input class="input" name="adminUsername" value="${esc(s.adminUsername)}" placeholder="breket_admin"></label>
+      <label class="f"><span>${t('botKanal')}</span>${kanalSel}</label></div></div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end"><button class="btn primary" style="min-height:44px;padding:0 26px">${t('save')}</button></div>
+  </form>`;
+  $('#sform').onsubmit = async e => {
+    e.preventDefault();
+    const f = e.target, out = { branches: {} };
+    f.querySelectorAll('[data-branch]').forEach(card => {
+      const g = n => card.querySelector(`[name="${n}"]`).value;
+      out.branches[card.dataset.branch] = { address_uz: g('address_uz'), address_ru: g('address_ru'), landmark_uz: g('landmark_uz'), landmark_ru: g('landmark_ru'), map: g('map') };
+    });
+    out.adminUsername = f.adminUsername.value; out.channel = f.channel.value;
+    try { S.settings = (await api('saveSettings', { settings: out })).settings; toast(t('saved')); pageSettings(); }
+    catch (er) { toast(errMsg(er), true); }
+  };
+}
+
+/* ======================================================== админы */
+async function pageAdmins() {
+  const owner = S.admin.role === 'owner';
+  $('#main').innerHTML = head(t('nav.admins')) + `<div class="grid2" style="align-items:start">
+    <div class="card"><div id="alist"><div class="spin"></div></div></div>
+    <div>
+      ${owner ? `<form class="card pad sect" id="addA"><h3>${t('addAdmin')}</h3><div class="stack">
+        <label class="f"><span>${t('name')}</span><input class="input" name="name" required></label>
+        <div class="grid2"><label class="f"><span>${t('login')}</span><input class="input" name="login" required pattern="[a-zA-Z0-9_.]{3,32}" autocomplete="off"></label>
+        <label class="f"><span>${t('password')}</span><input class="input" name="password" required minlength="6" autocomplete="new-password"></label></div>
+        <label class="f"><span>${t('role')}</span><select class="input" name="role"><option value="admin">${t('adminRole')}</option><option value="owner">${t('owner')}</option></select></label>
+        <button class="btn primary">${IC.plus} ${t('addAdmin')}</button></div></form>` : ''}
+      <form class="card pad sect" id="pwF"><h3>${t('myPassword')}</h3><div class="stack">
+        <label class="f"><span>${t('oldPw')}</span><input class="input" type="password" name="old" required autocomplete="current-password"></label>
+        <label class="f"><span>${t('newPw')}</span><input class="input" type="password" name="pw" required minlength="6" autocomplete="new-password"></label>
+        <button class="btn primary">${t('save')}</button></div></form>
+    </div></div>
+    <h3 style="margin:24px 0 12px">${t('log')}</h3><div class="card" id="logBox"><div class="spin"></div></div>`;
+  const load = async () => {
+    const r = await api('admins');
+    $('#alist').innerHTML = `<table class="table"><thead><tr><th>${t('name')}</th><th>${t('login')}</th><th>${t('role')}</th><th></th></tr></thead><tbody>
+      ${r.admins.map(a => `<tr><td><b>${esc(a.name)}</b></td><td>${esc(a.login)}</td><td><span class="badge ${a.role === 'owner' ? 'bot' : ''}">${a.role === 'owner' ? t('owner') : t('adminRole')}</span></td>
+        <td style="text-align:right">${owner && a.login !== S.admin.login ? `<button class="ib no" title="${t('remove')}" data-rm="${esc(a.login)}">${IC.trash}</button>` : ''}</td></tr>`).join('')}</tbody></table>`;
+    $('#alist').querySelectorAll('[data-rm]').forEach(b => b.onclick = async () => {
+      if (!confirm(t('remove') + ': ' + b.dataset.rm + '?')) return;
+      try { await api('removeAdmin', { login: b.dataset.rm }); toast(t('done')); load(); } catch (e) { toast(errMsg(e), true); }
+    });
+    $('#logBox').innerHTML = r.log.length ? `<div class="scroll-x"><table class="table"><tbody>${r.log.map(x =>
+      `<tr><td class="muted" style="white-space:nowrap">${esc(x.ts)}</td><td><b>${esc(x.who)}</b></td><td>${esc(x.text)}</td></tr>`).join('')}</tbody></table></div>` : '<div class="empty">—</div>';
+  };
+  try { await load(); } catch (e) { toast(errMsg(e), true); }
+  if (owner) $('#addA').onsubmit = async e => {
+    e.preventDefault(); const f = e.target;
+    try { await api('addAdmin', { name: f.name.value, login: f.login.value, password: f.password.value, role: f.role.value }); f.reset(); toast(t('done')); load(); }
+    catch (er) { toast(errMsg(er), true); }
+  };
+  $('#pwF').onsubmit = async e => {
+    e.preventDefault(); const f = e.target;
+    try { await api('changePassword', { oldPassword: f.old.value, password: f.pw.value }); f.reset(); toast(t('saved')); }
+    catch (er) { toast(errMsg(er), true); }
+  };
+}
+
+/* ======================================================== старт */
+async function boot() {
+  if (!S.token) return renderLogin(API_URL ? '' : L[S.lang].errors.not_configured);
+  try {
+    const r = await api('me');
+    S.admin = r.admin; S.today = r.today; S.branchOrder = r.branchOrder; S.settings = r.settings; S.kanal = r.kanal || [];
+    const h = location.hash.slice(1);
+    if (PAGES.includes(h)) S.page = h;
+    renderShell();
+  } catch (e) { if (e.message !== 'auth') renderLogin(errMsg(e)); }
+}
+boot();
 </script>
 </body>
 </html>
