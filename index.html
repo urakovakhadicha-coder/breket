@@ -148,6 +148,13 @@ h2 { font-size: 22px; font-weight: 800; letter-spacing: -.015em; margin: 6px 0 4
 .field span { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin: 0 4px 6px; }
 .input { width: 100%; font: inherit; font-weight: 600; font-size: 16px; padding: 14px 16px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--text); outline: none; }
 .input:focus { border-color: var(--brand); }
+.phone-in { display: flex; align-items: center; border: 2px solid var(--line); border-radius: 14px; background: var(--card); }
+.phone-in:focus-within { border-color: var(--brand); }
+.phone-in span { padding: 0 2px 0 16px; font-weight: 700; font-size: 16px; color: var(--muted); }
+.phone-in .input { border: 0; padding-left: 8px; background: none; }
+.or { display: flex; align-items: center; gap: 10px; margin: 14px 0; color: var(--muted); font-size: 13px; font-weight: 700; }
+.or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.linkbtn { display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; color: var(--brand-deep); font-weight: 700; font-size: 14px; }
 .phone-ok { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 14px; background: var(--brand-soft); font-weight: 700; }
 
 .done { text-align: center; padding: 24px 8px 8px; }
@@ -215,6 +222,9 @@ const T = {
     yourData: "Ma'lumotlaringiz", yourDataSub: 'Bir marta kiritiladi',
     fullName: 'Ism va familiya', namePh: 'Masalan: Aziza Karimova', sharePhone: 'Raqamni yuborish',
     shareHint: 'Raqam Telegram orqali yuboriladi', next: 'Davom etish',
+    editData: "Ism yoki raqamni o'zgartirish",
+    or: 'yoki', typePhone: "Raqamni qo'lda kiritish", useShare: 'Telegram orqali yuborish', changePhone: "O'zgartirish",
+    manualHint: 'Siz bilan bog‘lanadigan raqam, masalan: 90 123 45 67',
     confirmTitle: 'Tasdiqlang', confirmSub: "Ma'lumotlarni tekshiring", confirm: 'Tasdiqlash', confirmMove: "Ko'chirishni tasdiqlash",
     oldBooking: 'Eski yozuv',
     doneTitle: 'Yozildingiz!', doneMoved: "Yozuv ko'chirildi!", doneSub: 'Tashrifdan oldin Telegramda eslatma yuboramiz.',
@@ -242,6 +252,9 @@ const T = {
     yourData: 'Ваши данные', yourDataSub: 'Вводятся один раз',
     fullName: 'Имя и фамилия', namePh: 'Например: Азиза Каримова', sharePhone: 'Отправить номер',
     shareHint: 'Номер передаётся через Telegram', next: 'Продолжить',
+    editData: 'Изменить имя или номер',
+    or: 'или', typePhone: 'Ввести номер вручную', useShare: 'Отправить через Telegram', changePhone: 'Изменить',
+    manualHint: 'Номер для связи с вами, например: 90 123 45 67',
     confirmTitle: 'Подтвердите', confirmSub: 'Проверьте данные', confirm: 'Подтвердить запись', confirmMove: 'Подтвердить перенос',
     oldBooking: 'Старая запись',
     doneTitle: 'Вы записаны!', doneMoved: 'Запись перенесена!', doneSub: 'Перед визитом пришлём напоминание в Telegram.',
@@ -370,7 +383,7 @@ function go(screen) {
 function back() {
   haptic('sel');
   let p = PARENT[S.screen] || 'home';
-  if (S.screen === 'confirm' && !S.user) p = 'register';
+  if (S.screen === 'confirm' && (!S.user || S.editing)) p = 'register';
   if (p === 'home') S.moveFrom = null;
   go(p);
 }
@@ -481,19 +494,25 @@ const SCREENS = {
   },
 
   register() {
-    const canContact = inTg && tg.isVersionAtLeast('6.9');
+    const canContact = (inTg && tg.isVersionAtLeast('6.9')) || DEMO;
+    const manual = S.phoneMode === 'manual' || !canContact;
     return `${steps(4)}<h2>${t('yourData')}</h2><p class="sub">${t('yourDataSub')}</p>
       <label class="field"><span>${t('fullName')}</span><input class="input" id="regName" autocomplete="name" maxlength="60" placeholder="${esc(t('namePh'))}" value="${esc(S.regName)}"></label>
       <div class="field"><span>${t('phone')}</span>
-        ${S.regPhone ? `<div class="phone-ok"><span style="color:var(--ok)">${I.check.replace('<svg', '<svg width="20" height="20"')}</span>${fmtPhone(S.regPhone)}</div>`
-          : canContact || DEMO ? `<button class="btn full" data-act="share" style="min-height:52px">${I.phone.replace('<svg', '<svg width="20" height="20"')} ${t('sharePhone')}</button><div class="note">${t('shareHint')}</div>`
-          : `<input class="input" id="regPhone" type="tel" inputmode="tel" placeholder="+998 __ ___ __ __">`}
+        ${S.regPhone ? `<div class="phone-ok"><span style="color:var(--ok)">${I.check.replace('<svg', '<svg width="20" height="20"')}</span>${fmtPhone(S.regPhone)}
+            <button class="linkbtn" data-act="phoneReset" style="margin:0 0 0 auto">${t('changePhone')}</button></div>`
+          : manual ? `<div class="phone-in"><span>+998</span><input class="input" id="regPhone" type="tel" inputmode="tel" autocomplete="tel" maxlength="17" placeholder="90 123 45 67" value="${esc(S.phoneDraft || '')}"></div>
+            <div class="note">${t('manualHint')}</div>
+            ${canContact ? `<button class="linkbtn" data-act="phoneShare">${I.phone.replace('<svg', '<svg width="17" height="17"')} ${t('useShare')}</button>` : ''}`
+          : `<button class="btn full" data-act="share" style="min-height:52px">${I.phone.replace('<svg', '<svg width="20" height="20"')} ${t('sharePhone')}</button><div class="note">${t('shareHint')}</div>
+            <div class="or"><span>${t('or')}</span></div>
+            <button class="btn full" data-act="phoneManual" style="min-height:48px;background:var(--card);box-shadow:var(--shadow)">✏️ ${t('typePhone')}</button>`}
       </div>`;
   },
 
   confirm() {
     const old = S.moveFrom && S.bookings.find(b => b.id === S.moveFrom);
-    const u = S.user || { name: S.regName, phone: S.regPhone };
+    const u = S.user && !S.editing ? S.user : { name: S.regName, phone: S.regPhone };
     const line = (k, v, s) => `<div class="line"><div class="k">${k}</div><div class="v">${v}${s ? `<small>${s}</small>` : ''}</div></div>`;
     return `${steps(4)}<h2>${t('confirmTitle')}</h2><p class="sub">${t('confirmSub')}</p>
       <div class="card sum">
@@ -502,7 +521,8 @@ const SCREENS = {
         ${line(t('date'), fmtLong(S.day))}
         ${line(t('time'), S.time)}
         ${line(t('name'), esc(u.name), fmtPhone(u.phone))}
-      </div>`;
+      </div>
+      ${S.user ? `<button class="linkbtn" data-act="editData" style="margin:14px 4px 0">✏️ ${t('editData')}</button>` : ''}`;
   },
 
   done() {
@@ -522,9 +542,9 @@ const SCREENS = {
 const AFTER = {
   time() { if (S.time) setBar(t('next'), nextFromTime); },
   register() {
-    const upd = () => setBar(t('next'), submitRegistration, ($('#regName').value.trim().length < 2) || !(S.regPhone || ($('#regPhone') && $('#regPhone').value.replace(/\D/g, '').length >= 9)));
+    const upd = () => setBar(t('next'), submitRegistration, ($('#regName').value.trim().length < 2) || !(S.regPhone || ($('#regPhone') && localPhone($('#regPhone').value))));
     $('#regName').addEventListener('input', e => { S.regName = e.target.value; upd(); });
-    if ($('#regPhone')) $('#regPhone').addEventListener('input', upd);
+    if ($('#regPhone')) $('#regPhone').addEventListener('input', e => { S.phoneDraft = e.target.value; upd(); });
     upd();
   },
   confirm() { setBar(S.moveFrom ? t('confirmMove') : t('confirm'), doBook); },
@@ -533,7 +553,7 @@ const AFTER = {
 
 /* ------------------------------------------------------------------ действия */
 function startBooking() {
-  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null;
+  S.branch = S.branch || (S.user && S.user.lastBranch) || null; S.day = null; S.time = null; S.editing = false;
   go('branch');
 }
 function nextFromTime() {
@@ -541,8 +561,14 @@ function nextFromTime() {
 }
 function submitRegistration() {
   S.regName = $('#regName').value.trim().split(/\s+/).join(' ');
-  if ($('#regPhone')) S.regPhone = $('#regPhone').value;
+  if ($('#regPhone')) S.regPhone = localPhone($('#regPhone').value);
   go('confirm');
+}
+// «90 123 45 67», «+998 90 123-45-67», «998901234567» → «901234567»; иначе ''
+function localPhone(v) {
+  let d = String(v || '').replace(/\D/g, '');
+  if (d.length === 12 && d.startsWith('998')) d = d.slice(3);
+  return d.length === 9 ? d : '';
 }
 function sharePhone() {
   if (DEMO) { S.regPhone = '901234567'; render(); return; }
@@ -563,9 +589,9 @@ async function doBook() {
   if (S.busy) return;
   S.busy = true; setBar(S.moveFrom ? t('confirmMove') : t('confirm'), null, true); $('#barBtn').innerHTML = '<div class="spin" style="width:22px;height:22px;border-width:2.5px"></div>';
   try {
-    if (!S.user) {
+    if (!S.user || S.editing) {
       const r = await api('register', { name: S.regName, phone: S.regPhone, lang: S.lang });
-      S.user = r.user;
+      S.user = r.user; S.editing = false;
     }
     await askWriteAccess();
     const moved = !!S.moveFrom;
@@ -616,6 +642,13 @@ document.addEventListener('click', async e => {
     setBar(t('next'), nextFromTime);
   }
   else if (a === 'share') sharePhone();
+  else if (a === 'phoneManual') { haptic('sel'); S.phoneMode = 'manual'; render(); const p = $('#regPhone'); p && p.focus(); }
+  else if (a === 'phoneShare') { haptic('sel'); S.phoneMode = 'share'; render(); }
+  else if (a === 'editData') {
+    haptic('sel'); S.editing = true; S.regName = S.user.name; S.regPhone = S.user.phone; S.phoneDraft = ''; S.phoneMode = null;
+    go('register');
+  }
+  else if (a === 'phoneReset') { haptic('sel'); S.regPhone = ''; S.phoneDraft = ''; S.phoneMode = null; render(); }
   else if (a === 'map') {
     const url = branchInfo(el.dataset.branch).map;
     if (!url) { toast(addr(el.dataset.branch) || '—'); return; }
