@@ -99,6 +99,7 @@ h2 { font-size: 22px; font-weight: 800; letter-spacing: -.015em; margin: 6px 0 4
 .bk-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .badge { font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 99px; background: var(--brand-soft); color: var(--brand-deep); }
 .badge.ok { background: rgba(47,158,91,.12); color: var(--ok); }
+.badge.no { background: rgba(229,72,77,.1); color: var(--danger); }
 .bk-date { font-size: 24px; font-weight: 800; letter-spacing: -.02em; line-height: 1.1; }
 .bk-time { font-size: 15px; color: var(--muted); font-weight: 600; margin-top: 4px; }
 .bk-time b { color: var(--text); }
@@ -229,7 +230,8 @@ const T = {
     confirmTitle: 'Tasdiqlang', confirmSub: "Ma'lumotlarni tekshiring", confirm: 'Tasdiqlash', confirmMove: "Ko'chirishni tasdiqlash",
     oldBooking: 'Eski yozuv',
     doneTitle: 'Yozildingiz!', doneMoved: "Yozuv ko'chirildi!", doneSub: 'Tashrifdan oldin Telegramda eslatma yuboramiz.',
-    home: 'Bosh sahifa', coming: 'Kelaman', confirmed: 'Tasdiqlangan', waiting: 'Faol',
+    home: 'Bosh sahifa', coming: 'Boraman', confirmed: 'Tasdiqlangan', waiting: 'Faol', declined: 'Bora olmayman',
+    declinedNote: 'Yozuvni boshqa vaqtga ko‘chirish uchun administrator bilan bog‘laning.',
     move: "Ko'chirish", cancel: 'Bekor qilish', askCancel: 'Yozuvni bekor qilasizmi?', cancelled: 'Yozuv bekor qilindi',
     tooLate: "Tashrif kuni bekor qilish yoki ko'chirish faqat admin orqali.",
     thanks: 'Rahmat! Sizni kutamiz', slotTaken: 'Bu vaqt hozirgina band qilindi, boshqasini tanlang.',
@@ -260,7 +262,8 @@ const T = {
     confirmTitle: 'Подтвердите', confirmSub: 'Проверьте данные', confirm: 'Подтвердить запись', confirmMove: 'Подтвердить перенос',
     oldBooking: 'Старая запись',
     doneTitle: 'Вы записаны!', doneMoved: 'Запись перенесена!', doneSub: 'Перед визитом пришлём напоминание в Telegram.',
-    home: 'На главную', coming: 'Приду', confirmed: 'Подтверждено', waiting: 'Активна',
+    home: 'На главную', coming: 'Приду', confirmed: 'Подтверждено', waiting: 'Активна', declined: 'Не смогу прийти',
+    declinedNote: 'Свяжитесь с администратором, чтобы перенести запись.',
     move: 'Перенести', cancel: 'Отменить', askCancel: 'Отменить запись?', cancelled: 'Запись отменена',
     tooLate: 'В день визита отменить или перенести запись можно только через администратора.',
     thanks: 'Спасибо! Ждём вас', slotTaken: 'Это время только что заняли, выберите другое.',
@@ -426,12 +429,14 @@ function bookingCard(b) {
     : `<div class="actions">${b.confirmed ? '' : `<button class="btn primary full" data-act="coming" data-id="${b.id}">${t('coming')}</button>`}</div>
        <div class="note">${t('tooLate')}</div>`;
   return `<div class="card">
-    <div class="bk-head"><span class="badge ${b.confirmed ? 'ok' : ''}">${b.confirmed ? '✓ ' + t('confirmed') : t('waiting')}</span>
+    <div class="bk-head">${b.answer === 'no' ? `<span class="badge no">✕ ${t('declined')}</span>`
+      : `<span class="badge ${b.confirmed ? 'ok' : ''}">${b.confirmed ? '✓ ' + t('confirmed') : t('waiting')}</span>`}
       <button class="badge" data-act="map" data-branch="${b.branch}">📍 ${esc(b.branch)}</button></div>
     <div class="bk-date">${fmtLong(b.day)}</div>
     <div class="bk-time"><b>${b.time}</b> · ${esc(branchName(b.branch))}</div>
     ${b.name && S.bookings.length > 1 ? `<div class="bk-time">👤 ${esc(b.name)}</div>` : ''}
     ${addr(b.branch) ? `<div class="note" style="margin-top:6px">${esc(addr(b.branch))}</div>` : ''}
+    ${b.answer === 'no' ? `<button class="linkbtn" data-act="admin">👤 ${t('declinedNote')}</button>` : ''}
     ${actions}
   </div>`;
 }
@@ -668,7 +673,7 @@ document.addEventListener('click', async e => {
   }
   else if (a === 'coming') {
     S.busy = true;
-    try { await api('confirm', { id: el.dataset.id }); S.bookings.forEach(b => { if (b.id === el.dataset.id) b.confirmed = true; }); haptic('success'); toast(t('thanks')); }
+    try { await api('confirm', { id: el.dataset.id }); S.bookings.forEach(b => { if (b.id === el.dataset.id) { b.confirmed = true; b.answer = 'yes'; } }); haptic('success'); toast(t('thanks')); }
     catch (err) { toast(errText(err)); }
     S.busy = false; render();
   }
