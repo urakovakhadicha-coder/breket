@@ -212,7 +212,7 @@ const I = {
 /* ------------------------------------------------------------------ тексты */
 const T = {
   uz: {
-    clinic: 'Breket Center', doctor: 'Dr. Shahboz klinikasi',
+    clinic: 'Breket Center', doctor: 'Dr. Shahboz Akhmedov klinikasi',
     book: 'Aktivatsiyaga yozilish', bookSub: 'Onlayn, 1 daqiqada',
     myBooking: 'Sizning yozuvingiz', myBookings: 'Sizning yozuvlaringiz',
     bookMore: 'Yana yozilish', bookMoreSub: "Masalan, oila a'zosini yozish", addresses: 'Manzillarimiz', admin: "Admin bilan bog'lanish", adminSub: 'Savollar bo\'lsa yozing',
@@ -244,7 +244,7 @@ const T = {
     fmtDate: (d, m, w) => `${d}-${m}, ${w}`, monthTitle: (m, y) => `${m} ${y}`
   },
   ru: {
-    clinic: 'Breket Center', doctor: 'Клиника Dr. Shahboz',
+    clinic: 'Breket Center', doctor: 'Клиника Dr. Shahboz Akhmedov',
     book: 'Записаться на активацию', bookSub: 'Онлайн, за 1 минуту',
     myBooking: 'Ваша запись', myBookings: 'Ваши записи',
     bookMore: 'Записаться ещё раз', bookMoreSub: 'Например, записать члена семьи', addresses: 'Наши адреса', admin: 'Связаться с админом', adminSub: 'Если есть вопросы',
@@ -453,18 +453,7 @@ const SCREENS = {
       <div class="hero"><div class="logo"></div><div><h1>${t('clinic')}</h1><p>${t('doctor')}</p></div></div>
       ${n ? `<div class="label">${t(n > 1 ? 'myBookings' : 'myBooking')}</div><div class="stack">${S.bookings.map(bookingCard).join('')}</div>` : ''}
       ${!n ? cta(t('book'), t('bookSub')) : n < max ? `<div style="margin-top:14px">${cta(t('bookMore'), t('bookMoreSub'))}</div>` : ''}
-      <div class="label">${t('addresses')}</div>
-      <div class="card list">
-        ${S.config.branchOrder.map(b => `
-          <button class="row" data-act="map" data-branch="${b}">
-            <div class="ri">${I.pin}</div>
-            <div><b>${esc(branchName(b))}</b><small>${esc(addr(b) || '—')}${landmark(b) ? ' · ' + esc(landmark(b)) : ''}</small>
-              <div class="days" style="margin-top:6px">${weekdays(b)}</div></div>
-            <div class="chev">${I.arrow}</div>
-          </button>`).join('')}
-      </div>
-      <div class="label">&nbsp;</div>
-      <div class="card list">
+      <div class="card list" style="margin-top:22px">
         <button class="row" data-act="admin"><div class="ri">${I.chat}</div><div><b>${t('admin')}</b><small>${t('adminSub')}</small></div><div class="chev">${I.arrow}</div></button>
       </div>`;
   },
