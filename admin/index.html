@@ -250,7 +250,7 @@ const L = {
     title: 'Admin panel', login: 'Login', password: 'Parol', signIn: 'Kirish', signOut: 'Chiqish',
     nav: { schedule: 'Jadval', broadcast: 'Rassilka', stats: 'Statistika', users: 'Bot bemorlari', settings: 'Sozlamalar', admins: 'Adminlar' },
     today: 'Bugun', add: 'Yozish', free: "Bo'sh", busy: 'Band', noAct: "Bu kunda aktivatsiya yo'q", noSheet: "Jadvalda bu oy uchun list yo'q",
-    booked: 'band', freeN: "bo'sh", bot: 'Bot', kelaman: 'Kelaman', keldi: 'Keldi', kelmadi: 'Kelmadi',
+    booked: 'band', freeN: "bo'sh", bot: 'Bot', kelaman: 'Boraman', declined: 'Bora olmaydi', keldi: 'Keldi', kelmadi: 'Kelmadi',
     markCame: 'Keldi deb belgilash', edit: 'Tahrirlash', move: "Ko'chirish", cancel: 'Bekor qilish',
     askCancel: "Yozuvni bekor qilasizmi? Jadvaldagi bemor ma'lumotlari o'chiriladi.",
     newBooking: 'Yangi yozuv', editBooking: 'Tahrirlash', moveBooking: "Yozuvni ko'chirish",
@@ -280,7 +280,7 @@ const L = {
     title: 'Админ-панель', login: 'Логин', password: 'Пароль', signIn: 'Войти', signOut: 'Выйти',
     nav: { schedule: 'Расписание', broadcast: 'Рассылка', stats: 'Статистика', users: 'Пациенты бота', settings: 'Настройки', admins: 'Админы' },
     today: 'Сегодня', add: 'Записать', free: 'Свободно', busy: 'Занято', noAct: 'В этот день нет активаций', noSheet: 'В таблице нет листа на этот месяц',
-    booked: 'занято', freeN: 'свободно', bot: 'Бот', kelaman: 'Придёт', keldi: 'Пришёл', kelmadi: 'Не пришёл',
+    booked: 'занято', freeN: 'свободно', bot: 'Бот', kelaman: 'Придёт', declined: 'Не сможет прийти', keldi: 'Пришёл', kelmadi: 'Не пришёл',
     markCame: 'Отметить «Keldi»', edit: 'Изменить', move: 'Перенести', cancel: 'Отменить',
     askCancel: 'Отменить запись? Данные пациента в строке таблицы будут очищены.',
     newBooking: 'Новая запись', editBooking: 'Изменить', moveBooking: 'Перенос записи',
@@ -325,7 +325,9 @@ function toast(msg, err) {
   const el = $('#toast'); el.textContent = msg; el.className = 'toast show' + (err ? ' err' : '');
   clearTimeout(toast._t); toast._t = setTimeout(() => { el.className = 'toast' + (err ? ' err' : ''); }, 3200);
 }
-const errMsg = e => L[S.lang].errors[e.message] || (L[S.lang].errors.error + ': ' + (e.detail || e.message));
+const errMsg = e => (e.message === 'error' && e.detail)
+  ? L[S.lang].errors.error + ': ' + e.detail
+  : (L[S.lang].errors[e.message] || (L[S.lang].errors.error + ': ' + (e.detail || e.message)));
 
 async function api(action, data = {}) {
   if (!API_URL) throw new Error('not_configured');
@@ -490,6 +492,7 @@ function rowHtml(b, r) {
   const meta = [
     r.bot ? `<span class="badge bot">${t('bot')}</span>` : '',
     r.bot && r.bot.confirmed ? `<span class="badge ok">✓ ${t('kelaman')}</span>` : '',
+    r.bot && r.bot.answer === 'no' ? `<span class="badge no">✕ ${t('declined')}</span>` : '',
     r.keldi ? `<span class="badge ok">${t('keldi')}</span>` : '',
     r.channel ? `<span class="badge">${esc(r.channel)}</span>` : '',
     r.status ? `<span class="badge ${no ? 'no' : ''}">${esc(r.status)}</span>` : ''
